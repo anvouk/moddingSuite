@@ -8,8 +8,9 @@
     Width="402.696"
     Height="336.746"
     Icon="{StaticResource SaveIcon}"
-    mc:Ignorable="d">
-    <Grid>
+    mc:Ignorable="d"
+    Style="{StaticResource CustomWindowStyle}">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -118,7 +119,6 @@
 
         <Grid Grid.Row="2">
             <Border
-                Background="White"
                 BorderBrush="DarkGray"
                 BorderThickness="0,1,0,0">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">

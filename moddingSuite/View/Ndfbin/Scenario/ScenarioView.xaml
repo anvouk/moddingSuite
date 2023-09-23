@@ -1,24 +1,23 @@
 ﻿<Window x:Class="moddingSuite.View.Scenario.ScenarioView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Scenario editor" Height="145" Width="425">
-    <Grid>
+        Title="Scenario editor" Height="145" Width="425"
+        Style="{StaticResource CustomWindowStyle}">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ToolBar Grid.Row="0" Style="{StaticResource Vs2010StyleToolBar}">
-            <Button ToolTip="Save changes" Command="{Binding Path=SaveCommand}" Style="{DynamicResource ButtonStyle1}">
+        <ToolBar Grid.Row="0">
+            <Button ToolTip="Save changes" Command="{Binding Path=SaveCommand}">
                 <Image Source="{StaticResource SaveIcon}" />
             </Button>
             <Separator />
-            <Button ToolTip="Edit scenario logic" Command="{Binding Path=EditGameModeLogicCommand}"
-                    Style="{DynamicResource ButtonStyle1}">
+            <Button ToolTip="Edit scenario logic" Command="{Binding Path=EditGameModeLogicCommand}">
                 <Image Source="{StaticResource ScenarioIcon}" RenderTransformOrigin="2.325,0.339" Margin="0,0,0,8" />
             </Button>
-            <Button ToolTip="Zone Editor" Command="{Binding Path=ZoneEditorCommand}"
-                    Style="{DynamicResource ButtonStyle1}">
+            <Button ToolTip="Zone Editor" Command="{Binding Path=ZoneEditorCommand}">
                 <Image Source="{StaticResource ScenarioIcon}" RenderTransformOrigin="0.321,0.423" Margin="0,0,0,8" />
             </Button>
 

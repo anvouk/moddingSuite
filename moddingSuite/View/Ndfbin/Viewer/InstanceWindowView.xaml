@@ -2,8 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Viewer="clr-namespace:moddingSuite.View.Ndfbin.Viewer" Title="{Binding Path=Name}" Height="300"
-        Width="800" Icon="{StaticResource ScriptIcon}">
-    <Grid>
+        Width="800" Icon="{StaticResource ScriptIcon}"
+        Style="{StaticResource CustomWindowStyle}">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

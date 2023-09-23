@@ -7,7 +7,7 @@
     d:DesignHeight="395"
     d:DesignWidth="789"
     mc:Ignorable="d">
-    <Grid Background="White">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

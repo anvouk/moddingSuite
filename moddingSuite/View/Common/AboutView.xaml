@@ -9,15 +9,7 @@
     Icon="{StaticResource AboutIcon}"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
-    WindowStyle="SingleBorderWindow">
-    <Window.Resources>
-        <Style TargetType="{x:Type Label}">
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-        <Style TargetType="{x:Type ListBoxItem}">
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-    </Window.Resources>
+    Style="{StaticResource CustomWindowStyle}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

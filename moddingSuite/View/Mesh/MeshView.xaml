@@ -1,24 +1,24 @@
 ﻿<Window x:Class="moddingSuite.View.Mesh.MeshView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MeshView" Height="294" Width="848">
-    <Grid>
+        Title="MeshView" Height="294" Width="848"
+        Style="{DynamicResource CustomWindowStyle}">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ToolBar Grid.Row="0" Style="{StaticResource Vs2010StyleToolBar}">
-            <Button ToolTip="Save changes (not implemented)" IsEnabled="False" Style="{DynamicResource ButtonStyle1}">
+        <ToolBar Grid.Row="0">
+            <Button ToolTip="Save changes (not implemented)" IsEnabled="False">
                 <Image Source="{StaticResource SaveIcon}" />
             </Button>
             <Separator />
-            <Button ToolTip="Edit texture bindings" Command="{Binding Path=EditTextureBindingsCommand}"
-                    Style="{DynamicResource ButtonStyle1}">
+            <Button ToolTip="Edit texture bindings" Command="{Binding Path=EditTextureBindingsCommand}">
                 <Image Source="{StaticResource TextureIcon}" />
             </Button>
         </ToolBar>
 
-        <Grid Background="White" Grid.Row="1">
+        <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

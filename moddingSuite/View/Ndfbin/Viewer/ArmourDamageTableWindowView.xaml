@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="{Binding Path=Name}" Height="305.042" Width="483.193"
-        Icon="{StaticResource ScriptIcon}">
+        Icon="{StaticResource ScriptIcon}"
+        Style="{StaticResource CustomWindowStyle}">
     <Grid>
         <DataGrid x:Name="damageGrid" ItemsSource="{Binding TableData}"
                   IsSynchronizedWithCurrentItem="True"
@@ -20,8 +21,8 @@
 
 
             <!--<DataGrid.Columns>
-                
-                    
+
+
             </DataGrid.Columns> CellEditingTemplateSelector="{DynamicResource editingControlTemplateSelector}"/>
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DetailsCommand}" CommandParameter="{Binding ElementName=propGrid, Path=SelectedCells}" />

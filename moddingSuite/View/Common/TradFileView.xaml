@@ -2,30 +2,27 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Extension="clr-namespace:moddingSuite.View.Extension" Title="{Binding Path=TitleText}"
-        Icon="{StaticResource OpenDictionayIcon}" Height="438" Width="669">
-    <Grid>
+        Icon="{StaticResource OpenDictionayIcon}" Height="438" Width="669"
+        Style="{StaticResource CustomWindowStyle}">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid>
-            <ToolBar Style="{StaticResource Vs2010StyleToolBar}">
-                <Button ToolTip="Save changes back" Command="{Binding Path=SaveCommand}"
-                        Style="{StaticResource ButtonStyle1}">
+            <ToolBar>
+                <Button ToolTip="Save changes back" Command="{Binding Path=SaveCommand}">
                     <Image Source="{StaticResource SaveIcon}" />
                 </Button>
                 <Separator />
-                <Button ToolTip="Add new entry" Command="{Binding Path=AddEntryCommand}"
-                        Style="{StaticResource ButtonStyle1}">
+                <Button ToolTip="Add new entry" Command="{Binding Path=AddEntryCommand}">
                     <Image Source="{StaticResource AddRowIcon}" />
                 </Button>
-                <Button ToolTip="Remove entry" Command="{Binding Path=RemoveEntryCommand}"
-                        Style="{StaticResource ButtonStyle1}">
+                <Button ToolTip="Remove entry" Command="{Binding Path=RemoveEntryCommand}">
                     <Image Source="{StaticResource DeleteRowIcon}" />
                 </Button>
                 <Separator />
-                <Button ToolTip="Calculate new hash" Command="{Binding Path=CreateHashCommand}"
-                        Style="{StaticResource ButtonStyle1}">
+                <Button ToolTip="Calculate new hash" Command="{Binding Path=CreateHashCommand}">
                     <Image Source="{StaticResource CreateHashIcon}" />
                 </Button>
 

@@ -9,14 +9,14 @@
     Title="{Binding Path=Title}"
     Width="1075"
     Height="900"
-    Icon="{StaticResource ScriptIcon}">
-    <Grid>
+    Icon="{StaticResource ScriptIcon}"
+    Style="{StaticResource CustomWindowStyle}">
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <UniformGrid
             Margin="0,0,0,20"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Panel.ZIndex="1000"
-            Background="White"
             Visibility="{Binding Path=IsUIBusy, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
             <view:SpinningWheel
                 x:Name="wheel"
@@ -35,23 +35,20 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ToolBar Style="{StaticResource Vs2010StyleToolBar}">
+            <ToolBar>
                 <Button
                     Command="{Binding Path=SaveNdfbinCommand}"
-                    Style="{StaticResource ButtonStyle1}"
                     ToolTip="Save changes back">
                     <Image Source="{StaticResource SaveIcon}" />
                 </Button>
                 <Separator />
                 <ToggleButton
                     x:Name="ChangesButton"
-                    Style="{StaticResource ToggleButtonStyle1}"
                     ToolTip="View pending changes">
                     <Image Source="{StaticResource ViewChanges}" />
                 </ToggleButton>
                 <Button
                     Command="{Binding RunPythonScriptCommand}"
-                    Style="{StaticResource ButtonStyle1}"
                     ToolTip="Run Python script">
                     <Image
                         Source="{StaticResource PythonIcon}"
@@ -102,8 +99,8 @@
                 </DataGrid>
             </Popup>
 
-            <TabControl Grid.Row="1">
-                <TabItem Header="Classes">
+            <TabControl Grid.Row="1" Background="{DynamicResource Window.Static.Background}">
+                <TabItem Header="Classes" Background="{DynamicResource TabItem.Static.Background}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="4*" />
@@ -126,6 +123,8 @@
                                     Width="150"
                                     Margin="5"
                                     VerticalAlignment="Top"
+                                    Background="{DynamicResource TextBox.Static.Background}"
+                                    Foreground="White"
                                     Text="{Binding Path=ClassesFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <Button Command="{Binding MakeTopObjectCommand}" ToolTip="Make top object">
@@ -135,7 +134,7 @@
                                         ToolTip="Find out what references this instance">
                                     <Image SnapsToDevicePixels="True" Source="{StaticResource SearchIcon}" />
                                 </Button>
-                                <Menu>
+                                <Menu Background="{DynamicResource MenuItem.Static.Background}">
                                     <MenuItem>
                                         <MenuItem.Header>
                                             <Image Source="{StaticResource AddPropIcon}" />
@@ -284,7 +283,6 @@
                                 StaysOpen="False">
                                 <Border
                                     Padding="10"
-                                    Background="White"
                                     BorderBrush="DarkGray"
                                     BorderThickness="1">
                                     <Grid>
@@ -366,7 +364,7 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem Header="Strings/Trans">
+                <TabItem Header="Strings/Trans" Background="{DynamicResource TabItem.Static.Background}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5*" />
@@ -390,6 +388,8 @@
                                     Width="150"
                                     Margin="5"
                                     IsTabStop="True"
+                                    Background="{DynamicResource TextBox.Static.Background}"
+                                    Foreground="White"
                                     Text="{Binding Path=StringFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
                                 <Button Command="{Binding Path=AddStringCommand}" ToolTip="Add new row">
                                     <Image Source="{StaticResource AddRowIcon}" />
@@ -471,7 +471,7 @@
                         </DataGrid>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Top Objects">
+                <TabItem Header="Top Objects" Background="{DynamicResource TabItem.Static.Background}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="10*" />

@@ -6,7 +6,7 @@
              xmlns:Extension1="clr-namespace:moddingSuite.View.Extension"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <TextBox IsTabStop="True" Extension1:Masking.Mask="#([0-9a-fA-F]{0,16})"
                  Text="{Binding Path=Value.Value,Converter={StaticResource Color32ValueConverter}}"
                  Background="{Binding Path=Value.Value, Converter={StaticResource ColorToBrushConverter}}" />

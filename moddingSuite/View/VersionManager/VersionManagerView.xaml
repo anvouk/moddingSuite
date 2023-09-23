@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:VersionManager="clr-namespace:moddingSuite.ViewModel.VersionManager" Title="VersionManagerView"
-        Height="378" Width="258">
+        Height="378" Width="258"
+        Style="{StaticResource CustomWindowStyle}">
     <Window.Resources>
 
         <HierarchicalDataTemplate DataType="{x:Type VersionManager:VersionInfoViewModel}"
@@ -19,7 +20,7 @@
         </DataTemplate>
 
     </Window.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource Window.Static.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="8*" />
