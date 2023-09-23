@@ -2,85 +2,84 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace moddingSuite.Model.Ndfbin.Types.AllTypes
+namespace moddingSuite.Model.Ndfbin.Types.AllTypes;
+
+public class NdfObjectReference : NdfValueWrapper
 {
-    public class NdfObjectReference : NdfValueWrapper
+    private readonly bool _isDead;
+    private NdfClass _class;
+    private uint _instanceId;
+
+    public NdfObjectReference(NdfClass cls, uint instance, bool isDead = false)
+        : base(NdfType.ObjectReference)
     {
-        private readonly bool _isDead;
-        private NdfClass _class;
-        private uint _instanceId;
+        Class = cls;
+        InstanceId = instance;
 
-        public NdfObjectReference(NdfClass cls, uint instance, bool isDead = false)
-            : base(NdfType.ObjectReference)
+        _isDead = isDead;
+    }
+
+    public NdfClass Class
+    {
+        get => _class;
+        set
         {
-            Class = cls;
-            InstanceId = instance;
-
-            _isDead = isDead;
+            _class = value;
+            OnPropertyChanged();
         }
+    }
 
-        public NdfClass Class
+    public uint InstanceId
+    {
+        get => _instanceId;
+        set
         {
-            get { return _class; }
-            set
-            {
-                _class = value;
-                OnPropertyChanged("Class");
-            }
+            _instanceId = value;
+            OnPropertyChanged();
         }
+    }
 
-        public uint InstanceId
+    public NdfObject Instance
+    {
+        get
         {
-            get { return _instanceId; }
-            set
-            {
-                _instanceId = value;
-                OnPropertyChanged("InstanceId");
-            }
-        }
+            if (Class == null) return null;
 
-        public NdfObject Instance
+            return Class.Instances.FirstOrDefault(o => o.Id == InstanceId);
+        }
+        set
         {
-            get
-            {
-                if (Class == null) return null;
+            if (!Class.Instances.Contains(value))
+                InstanceId = Class.Instances.First().Id;
+            else
+                InstanceId = value.Id;
 
-                return Class.Instances.FirstOrDefault(o => o.Id == InstanceId);
-            }
-            set
-            {
-                if (!Class.Instances.Contains(value))
-                    InstanceId = Class.Instances.First().Id;
-                else
-                    InstanceId = value.Id;
-
-                OnPropertyChanged("Instance");
-                OnPropertyChanged("InstanceId");
-            }
+            OnPropertyChanged();
+            OnPropertyChanged("InstanceId");
         }
+    }
 
-        public override string ToString()
-        {
-            if (Class == null)
-                return string.Format("Class does not exist : {0}", InstanceId);
+    public override string ToString()
+    {
+        if (Class == null)
+            return string.Format("Class does not exist : {0}", InstanceId);
 
-            return string.Format("{0} : {1} ({2}) - {3}", Class.Id, InstanceId, Instance.IsTopObject, Class.Name);
-        }
+        return string.Format("{0} : {1} ({2}) - {3}", Class.Id, InstanceId, Instance.IsTopObject, Class.Name);
+    }
 
-        public override byte[] GetBytes()
-        {
-            var refereceData = new List<byte>();
+    public override byte[] GetBytes()
+    {
+        List<byte> refereceData = new List<byte>();
 
-            refereceData.AddRange(BitConverter.GetBytes(InstanceId));
+        refereceData.AddRange(BitConverter.GetBytes(InstanceId));
 
-            refereceData.AddRange(_isDead ? new byte[] { 0xFF, 0xFF, 0xFF, 0xFF } : BitConverter.GetBytes(Class.Id));
+        refereceData.AddRange(_isDead ? new byte[] { 0xFF, 0xFF, 0xFF, 0xFF } : BitConverter.GetBytes(Class.Id));
 
-            return refereceData.ToArray();
-        }
+        return refereceData.ToArray();
+    }
 
-        public override byte[] GetNdfText()
-        {
-            throw new NotImplementedException();
-        }
+    public override byte[] GetNdfText()
+    {
+        throw new NotImplementedException();
     }
 }

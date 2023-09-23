@@ -1,62 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using moddingSuite.ViewModel.Base;
 
-namespace moddingSuite.ViewModel.UnhandledException
+namespace moddingSuite.ViewModel.UnhandledException;
+
+public class UnhandledExceptionViewModel : ViewModelBase
 {
-    public class UnhandledExceptionViewModel : ViewModelBase
+    private string _errorText;
+    private string _title;
+
+    public UnhandledExceptionViewModel(Exception exception)
     {
-        private string _title;
-        private string _errorText;
+        Title = "An unhandled exception occured";
 
-        public string Title
+        SendErrorCommand = new ActionCommand(SendErrorExecute);
+
+        StringBuilder sb = new StringBuilder();
+
+        Exception excep = exception;
+
+        while (excep != null)
         {
-            get { return _title; }
-            set
-            {
-                _title = value;
-                OnPropertyChanged("Title");
-            }
+            sb.Append(exception);
+            excep = excep.InnerException;
         }
 
-        public string ErrorText
+        ErrorText = sb.ToString();
+    }
+
+    public string Title
+    {
+        get => _title;
+        set
         {
-            get { return _errorText; }
-            set
-            {
-                _errorText = value;
-                OnPropertyChanged("ErrorText");
-            }
+            _title = value;
+            OnPropertyChanged();
         }
+    }
 
-        public ICommand SendErrorCommand { get; set; }
-
-        public UnhandledExceptionViewModel(Exception exception)
+    public string ErrorText
+    {
+        get => _errorText;
+        set
         {
-            Title = "An unhandled exception occured";
-
-            SendErrorCommand = new ActionCommand(SendErrorExecute);
-
-            var sb = new StringBuilder();
-
-            var excep = exception;
-
-            while (excep != null)
-            {
-                sb.Append(exception);
-                excep = excep.InnerException;
-            }
-
-            ErrorText = sb.ToString();
+            _errorText = value;
+            OnPropertyChanged();
         }
+    }
 
-        private void SendErrorExecute(object obj)
-        {
-            throw new NotImplementedException();
-        }
+    public ICommand SendErrorCommand { get; set; }
+
+    private void SendErrorExecute(object obj)
+    {
+        throw new NotImplementedException();
     }
 }

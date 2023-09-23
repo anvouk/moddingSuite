@@ -131,7 +131,8 @@
                                 <Button Command="{Binding MakeTopObjectCommand}" ToolTip="Make top object">
                                     <Image SnapsToDevicePixels="True" Source="{StaticResource ImportIcon}" />
                                 </Button>
-                                <Button Command="{Binding FindAllReferencesCommand}" ToolTip="Find out what references this instance">
+                                <Button Command="{Binding FindAllReferencesCommand}"
+                                        ToolTip="Find out what references this instance">
                                     <Image SnapsToDevicePixels="True" Source="{StaticResource SearchIcon}" />
                                 </Button>
                                 <Menu>
@@ -244,13 +245,18 @@
                             </Grid.ColumnDefinitions>
                             <Label VerticalAlignment="Top">Properties</Label>
                             <ToolBar Grid.Column="2">
-                                <Button Command="{Binding SelectedValue.AddPropertyCommand, ElementName=instanceGrid}" ToolTip="Add property value">
+                                <Button Command="{Binding SelectedValue.AddPropertyCommand, ElementName=instanceGrid}"
+                                        ToolTip="Add property value">
                                     <Image Source="{StaticResource AddPropIcon}" />
                                 </Button>
-                                <Button Command="{Binding SelectedValue.RemovePropertyCommand, ElementName=instanceGrid}" ToolTip="Set property to null">
+                                <Button
+                                    Command="{Binding SelectedValue.RemovePropertyCommand, ElementName=instanceGrid}"
+                                    ToolTip="Set property to null">
                                     <Image Source="{StaticResource DeletePropIcon}" />
                                 </Button>
-                                <Button Command="{Binding SelectedValue.CopyToInstancesCommand, ElementName=instanceGrid}" ToolTip="Copy value to instances">
+                                <Button
+                                    Command="{Binding SelectedValue.CopyToInstancesCommand, ElementName=instanceGrid}"
+                                    ToolTip="Copy value to instances">
                                     <Image Source="{StaticResource AddPropIcon}" />
                                 </Button>
                                 <ToggleButton x:Name="filterButton">
@@ -258,7 +264,9 @@
                                         <Image.Style>
                                             <Style TargetType="{x:Type Image}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=filterButton, Path=IsChecked}" Value="True">
+                                                    <DataTrigger
+                                                        Binding="{Binding ElementName=filterButton, Path=IsChecked}"
+                                                        Value="True">
                                                         <Setter Property="Source" Value="{StaticResource FilledFilter}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -312,12 +320,14 @@
                                                     SelectedValuePath="Name">
                                                     <DataGridComboBoxColumn.ElementStyle>
                                                         <Style TargetType="ComboBox">
-                                                            <Setter Property="ItemsSource" Value="{Binding SelectedValue.Properties, ElementName=classGrid}" />
+                                                            <Setter Property="ItemsSource"
+                                                                    Value="{Binding SelectedValue.Properties, ElementName=classGrid}" />
                                                         </Style>
                                                     </DataGridComboBoxColumn.ElementStyle>
                                                     <DataGridComboBoxColumn.EditingElementStyle>
                                                         <Style TargetType="ComboBox">
-                                                            <Setter Property="ItemsSource" Value="{Binding SelectedValue.Properties, ElementName=classGrid}" />
+                                                            <Setter Property="ItemsSource"
+                                                                    Value="{Binding SelectedValue.Properties, ElementName=classGrid}" />
                                                         </Style>
                                                     </DataGridComboBoxColumn.EditingElementStyle>
                                                 </DataGridComboBoxColumn>
@@ -377,7 +387,6 @@
                                 <Label>Strings</Label>
                                 <Separator />
                                 <TextBox
-                                    Grid.Column="2"
                                     Width="150"
                                     Margin="5"
                                     IsTabStop="True"

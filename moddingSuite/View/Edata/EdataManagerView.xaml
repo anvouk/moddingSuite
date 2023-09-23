@@ -208,7 +208,8 @@
 
                 <TabControl Grid.Column="2">
                     <TabItem Header="Workspace">
-                        <TreeView extension:TreeViewExtension.SelectItemOnRightClick="true" ItemsSource="{Binding Workspace.Root}">
+                        <TreeView extension:TreeViewExtension.SelectItemOnRightClick="true"
+                                  ItemsSource="{Binding Workspace.Root}">
                             <TreeView.Resources>
                                 <ContextMenu x:Key="workspaceContextMenu">
                                     <MenuItem
@@ -263,7 +264,8 @@
                         </TreeView>
                     </TabItem>
                     <TabItem Header="Gamespace">
-                        <TreeView extension:TreeViewExtension.SelectItemOnRightClick="true" ItemsSource="{Binding Gamespace.Root}">
+                        <TreeView extension:TreeViewExtension.SelectItemOnRightClick="true"
+                                  ItemsSource="{Binding Gamespace.Root}">
                             <TreeView.Resources>
                                 <DataTemplate DataType="{x:Type edata:FileViewModel}">
                                     <Grid>
@@ -330,4 +332,3 @@
         </Grid>
     </Grid>
 </Window>
-

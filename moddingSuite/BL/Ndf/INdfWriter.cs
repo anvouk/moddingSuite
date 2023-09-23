@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using moddingSuite.Model.Ndfbin;
 
-namespace moddingSuite.BL.Ndf
+namespace moddingSuite.BL.Ndf;
+
+internal interface INdfWriter
 {
-    interface INdfWriter
-    {
-        void Write(Stream outStrea, NdfBinary ndf, bool compressed);
-    }
+    void Write(Stream outStrea, NdfBinary ndf, bool compressed);
 }

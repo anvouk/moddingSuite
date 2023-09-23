@@ -1,36 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
-namespace moddingSuite.ViewModel.Edata
+namespace moddingSuite.ViewModel.Edata;
+
+public class FileViewModel : FileSystemItemViewModel
 {
-    public class FileViewModel : FileSystemItemViewModel
+    public FileViewModel(FileInfo info)
     {
-        private FileInfo _fileInfo;
-
-        public FileViewModel(FileInfo info)
-        {
-            _fileInfo = info;
-        }
-
-        public FileInfo Info
-        {
-            get { return _fileInfo; }
-            set
-            {
-                _fileInfo = value;
-            }
-        }
-
-        public override string Name
-        {
-            get
-            {
-                return Info.Name;
-            }
-        }
+        Info = info;
     }
+
+    public FileInfo Info { get; set; }
+
+    public override string Name => Info.Name;
 }

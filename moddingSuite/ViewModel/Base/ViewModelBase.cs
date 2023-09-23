@@ -4,41 +4,37 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
-namespace moddingSuite.ViewModel.Base
+namespace moddingSuite.ViewModel.Base;
+
+public class ViewModelBase : INotifyPropertyChanged
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    private bool _isUiBusy;
+
+    [XmlIgnore]
+    public bool IsUIBusy
     {
-        private bool _isUiBusy = false;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged<T>(params Expression<Func<T>>[] props)
+        get => _isUiBusy;
+        set
         {
-            foreach (var prop in props)
-            {
-                var body = prop.Body as MemberExpression;
-                if (PropertyChanged != null && body != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(body.Member.Name));
-            }
+            _isUiBusy = value;
+            OnPropertyChanged(() => IsUIBusy);
         }
+    }
 
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
+    public event PropertyChangedEventHandler PropertyChanged;
 
-        [XmlIgnore]
-        public bool IsUIBusy
+    public void OnPropertyChanged<T>(params Expression<Func<T>>[] props)
+    {
+        foreach (Expression<Func<T>> prop in props)
         {
-            get
-            {
-                return _isUiBusy;
-            }
-            set
-            {
-                _isUiBusy = value;
-                OnPropertyChanged(() => IsUIBusy);
-            }
+            MemberExpression body = prop.Body as MemberExpression;
+            if (PropertyChanged != null && body != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(body.Member.Name));
         }
+    }
+
+    public void OnPropertyChanged([CallerMemberName] string prop = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 }

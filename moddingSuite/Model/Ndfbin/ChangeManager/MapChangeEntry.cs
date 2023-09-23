@@ -1,54 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace moddingSuite.Model.Ndfbin.ChangeManager;
 
-namespace moddingSuite.Model.Ndfbin.ChangeManager
+public class MapChangeEntry : ChangeEntryBase
 {
-    public class MapChangeEntry : ChangeEntryBase
+    private MapValueHolder _newKey;
+    private MapValueHolder _newValue;
+
+    public MapChangeEntry(NdfPropertyValue affectedPropertyValue, MapValueHolder newKey, MapValueHolder newValue)
+        : base(affectedPropertyValue)
     {
-        private MapValueHolder _newKey;
-        private MapValueHolder _newValue;
+        NewKey = newKey;
+        NewValue = newValue;
+    }
 
-        public MapChangeEntry(NdfPropertyValue affectedPropertyValue, MapValueHolder newKey, MapValueHolder newValue)
-            : base(affectedPropertyValue)
+    public MapValueHolder NewKey
+    {
+        get => _newKey;
+        set
         {
-            NewKey = newKey;
-            NewValue = newValue;
- 
+            _newKey = value;
+            OnPropertyChanged();
         }
+    }
 
-        public MapValueHolder NewKey
+    public MapValueHolder NewValue
+    {
+        get => _newValue;
+        set
         {
-            get { return _newKey; }
-            set
-            {
-                _newKey = value;
-                OnPropertyChanged("NewKey");
-            }
+            _newValue = value;
+            OnPropertyChanged();
         }
-
-        public MapValueHolder NewValue
-        {
-            get { return _newValue; }
-            set
-            {
-                _newValue = value;
-                OnPropertyChanged("NewValue");
-            }
-        }
+    }
 
 
-        int min(int l, int r)
-        {
-            return l < r ? l : r;
-        }
+    private int min(int l, int r)
+    {
+        return l < r ? l : r;
+    }
 
-        float min(float l, float r)
-        {
-            return l < r ? l : r;
-        }
-
+    private float min(float l, float r)
+    {
+        return l < r ? l : r;
     }
 }

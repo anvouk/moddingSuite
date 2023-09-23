@@ -1,61 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-delegate void Redraw();
+internal delegate void Redraw();
+
 namespace ZoneEditor
 {
-    class PanAndZoom
+    internal class PanAndZoom
     {
-        public static Redraw redraw; 
+        public static Redraw redraw;
         private static Point mouseDown;
-        private static int startx = 0;             // offset of image when mouse was pressed
-        private static int starty = 0;
-        private static int imgx = 0;               // current offset of image
-        private static int imgy = 0;
+        private static int startx; // offset of image when mouse was pressed
+        private static int starty;
+        private static int imgx; // current offset of image
+        private static int imgy;
 
-        private static bool mousepressed = false;  // true as long as left mousebutton is pressed
+        private static bool mousepressed; // true as long as left mousebutton is pressed
         private static float zoom = 1;
 
-        public static MouseEventHandler MouseDown { get { return new MouseEventHandler(OnMouseDown); } }
-        public static MouseEventHandler MouseUp { get { return new MouseEventHandler(OnMouseUp); } }
-        public static MouseEventHandler MouseMove { get { return new MouseEventHandler(OnMouseMove); } }
-        public static MouseEventHandler MouseWheel { get { return new MouseEventHandler(OnMouseWheel); } }
-        public static Point fromLocalToGlobal(Point pl){
-            var locX = pl.X / zoom - imgx;
-            var locY = pl.Y / zoom - imgy;
+        public static MouseEventHandler MouseDown => OnMouseDown;
+        public static MouseEventHandler MouseUp => OnMouseUp;
+        public static MouseEventHandler MouseMove => OnMouseMove;
+        public static MouseEventHandler MouseWheel => OnMouseWheel;
+
+        public static Point fromLocalToGlobal(Point pl)
+        {
+            float locX = pl.X / zoom - imgx;
+            float locY = pl.Y / zoom - imgy;
 
             return new Point((int)locX, (int)locY);
         }
+
         public static Point fromGlobalToLocal(Point pg)
         {
-            var x = (pg.X + imgx) * zoom;
-            var y = (pg.Y + imgy) * zoom;
+            float x = (pg.X + imgx) * zoom;
+            float y = (pg.Y + imgy) * zoom;
             return new Point((int)x, (int)y);
         }
+
         public static void setZoom(float z)
         {
             zoom = z;
         }
+
         public static void Transform(PaintEventArgs e)
         {
             e.Graphics.ResetTransform();
             e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             e.Graphics.ScaleTransform(zoom, zoom);
             e.Graphics.TranslateTransform(imgx, imgy);
-            
         }
+
         private static void OnMouseDown(object sender, MouseEventArgs e)
         {
-            MouseEventArgs mouse = e as MouseEventArgs;
+            MouseEventArgs mouse = e;
 
             if (mouse.Button == MouseButtons.Left)
-            {
                 if (!mousepressed)
                 {
                     mousepressed = true;
@@ -63,16 +64,17 @@ namespace ZoneEditor
                     startx = imgx;
                     starty = imgy;
                 }
-            }
         }
+
         private static void OnMouseUp(object sender, MouseEventArgs e)
         {
             mousepressed = false;
         }
+
         private static void OnMouseMove(object sender, MouseEventArgs e)
         {
-            MouseEventArgs mouse = e as MouseEventArgs;
-            
+            MouseEventArgs mouse = e;
+
             if (mouse.Button == MouseButtons.Left)
             {
                 Point mousePosNow = mouse.Location;
@@ -82,8 +84,8 @@ namespace ZoneEditor
                 int deltaY = mousePosNow.Y - mouseDown.Y;
 
                 // calculate new offset of image based on the current zoom factor
-                imgx = (int)(startx + (deltaX / zoom));
-                imgy = (int)(starty + (deltaY / zoom));
+                imgx = (int)(startx + deltaX / zoom);
+                imgy = (int)(starty + deltaY / zoom);
                 redraw();
                 /*foreach (var c in pictureBox1.Controls)
                 {
@@ -102,10 +104,10 @@ namespace ZoneEditor
                 //pictureBox1.Refresh();
             }
         }
+
         private static void OnMouseWheel(object obj, MouseEventArgs e)
         {
-            
-            var control = obj as Control;
+            Control control = obj as Control;
             float oldzoom = zoom;
 
             /*if (e.Delta > 0)
@@ -117,7 +119,7 @@ namespace ZoneEditor
                 zoom = Math.Max(zoom - 0.1F, 0.01F);
             }*/
             zoom *= (float)Math.Pow(1.001, e.Delta);
-            MouseEventArgs mouse = e as MouseEventArgs;
+            MouseEventArgs mouse = e;
             Point mousePosNow = mouse.Location;
 
             // Where location of the mouse in the pictureframe

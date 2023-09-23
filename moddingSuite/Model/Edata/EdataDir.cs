@@ -1,62 +1,53 @@
 ﻿using System.Collections.Generic;
 
-namespace moddingSuite.Model.Edata
+namespace moddingSuite.Model.Edata;
+
+/// <summary>
+///     struct dictGroupEntry {
+///     DWORD groupId;
+///     DWORD entrySize;
+///     zstring name;
+///     };
+/// </summary>
+public class EdataDir : EdataEntity
 {
-    /// <summary>
-    ///     struct dictGroupEntry {
-    ///     DWORD groupId;
-    ///     DWORD entrySize;
-    ///     zstring name;
-    ///     };
-    /// </summary>
-    public class EdataDir : EdataEntity
+    private EdataDir _parent;
+    private int _subTreeSize;
+
+    public EdataDir()
+        : base(string.Empty)
     {
-        private readonly List<EdataDir> _children = new List<EdataDir>();
-        private readonly List<EdataContentFile> _files = new List<EdataContentFile>();
-        private EdataDir _parent;
-        private int _subTreeSize;
+    }
 
-        public EdataDir()
-            : base(string.Empty)
-        {
-        }
+    public EdataDir(string name, EdataDir parent = null)
+        : base(name)
+    {
+        Parent = parent;
+        if (parent != null)
+            parent.Children.Add(this);
+    }
 
-        public EdataDir(string name, EdataDir parent = null)
-            : base(name)
+    public int SubTreeSize
+    {
+        get => _subTreeSize;
+        set
         {
-            Parent = parent;
-            if (parent != null)
-                parent.Children.Add(this);
-        }
-
-        public int SubTreeSize
-        {
-            get { return _subTreeSize; }
-            set
-            {
-                _subTreeSize = value;
-                OnPropertyChanged("GroupId");
-            }
-        }
-
-        public EdataDir Parent
-        {
-            get { return _parent; }
-            set
-            {
-                _parent = value;
-                OnPropertyChanged("Parent");
-            }
-        }
-
-        public List<EdataDir> Children
-        {
-            get { return _children; }
-        }
-
-        public List<EdataContentFile> Files
-        {
-            get { return _files; }
+            _subTreeSize = value;
+            OnPropertyChanged("GroupId");
         }
     }
+
+    public EdataDir Parent
+    {
+        get => _parent;
+        set
+        {
+            _parent = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public List<EdataDir> Children { get; } = new();
+
+    public List<EdataContentFile> Files { get; } = new();
 }

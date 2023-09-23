@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
 using moddingSuite.Model.Mesh;
@@ -11,79 +6,76 @@ using moddingSuite.View.DialogProvider;
 using moddingSuite.ViewModel.Base;
 using moddingSuite.ViewModel.Ndf;
 
-namespace moddingSuite.ViewModel.Mesh
+namespace moddingSuite.ViewModel.Mesh;
+
+public class MeshEditorViewModel : ViewModelBase
 {
-    public class MeshEditorViewModel : ViewModelBase
+    private MeshFile _meshFile;
+    private ICollectionView _multiMaterialMeshesCollectionView;
+    private string _multiMaterialMeshesFilterExpression = string.Empty;
+
+    public MeshEditorViewModel(MeshFile file)
     {
-        private MeshFile _meshFile;
-        private ICollectionView _multiMaterialMeshesCollectionView;
-        private string _multiMaterialMeshesFilterExpression = string.Empty;
+        MeshFile = file;
 
-        public ICommand EditTextureBindingsCommand { get; protected  set; }
+        EditTextureBindingsCommand = new ActionCommand(EditTextureBindingsExecute);
+    }
 
-        public ICollectionView MultiMaterialMeshesCollectionView
+    public ICommand EditTextureBindingsCommand { get; protected set; }
+
+    public ICollectionView MultiMaterialMeshesCollectionView
+    {
+        get
         {
-            get
-            {
-                if (_multiMaterialMeshesCollectionView == null)
-                {
-                    BuildMultiMaterialMeshesCollectionView();
-                }
+            if (_multiMaterialMeshesCollectionView == null) BuildMultiMaterialMeshesCollectionView();
 
-                return _multiMaterialMeshesCollectionView;
-            }
+            return _multiMaterialMeshesCollectionView;
         }
+    }
 
-        public MeshFile MeshFile
+    public MeshFile MeshFile
+    {
+        get => _meshFile;
+        set
         {
-            get { return _meshFile; }
-            set { _meshFile = value; OnPropertyChanged("MeshFile"); }
+            _meshFile = value;
+            OnPropertyChanged();
         }
+    }
 
-        public string MultiMaterialMeshesFilterExpression
+    public string MultiMaterialMeshesFilterExpression
+    {
+        get => _multiMaterialMeshesFilterExpression;
+        set
         {
-            get { return _multiMaterialMeshesFilterExpression; }
-            set
-            {
-                _multiMaterialMeshesFilterExpression = value;
-                OnPropertyChanged(() => MultiMaterialMeshesFilterExpression);
-                MultiMaterialMeshesCollectionView.Refresh();
-            }
+            _multiMaterialMeshesFilterExpression = value;
+            OnPropertyChanged(() => MultiMaterialMeshesFilterExpression);
+            MultiMaterialMeshesCollectionView.Refresh();
         }
+    }
 
-        public MeshEditorViewModel(MeshFile file)
-        {
-            MeshFile = file;
+    private void EditTextureBindingsExecute(object obj)
+    {
+        NdfEditorMainViewModel ndfEditor = new NdfEditorMainViewModel(MeshFile.TextureBindings);
 
-            EditTextureBindingsCommand = new ActionCommand(EditTextureBindingsExecute);
-        }
+        DialogProvider.ProvideView(ndfEditor, this);
+    }
 
-        private void EditTextureBindingsExecute(object obj)
-        {
-            var ndfEditor = new NdfEditorMainViewModel(MeshFile.TextureBindings);
+    private void BuildMultiMaterialMeshesCollectionView()
+    {
+        _multiMaterialMeshesCollectionView = CollectionViewSource.GetDefaultView(MeshFile.MultiMaterialMeshFiles);
+        _multiMaterialMeshesCollectionView.Filter = FilterMultiMaterialMeshes;
 
-            DialogProvider.ProvideView(ndfEditor, this);
-        }
+        OnPropertyChanged(() => MultiMaterialMeshesCollectionView);
+    }
 
-        private void BuildMultiMaterialMeshesCollectionView()
-        {
-            _multiMaterialMeshesCollectionView = CollectionViewSource.GetDefaultView(MeshFile.MultiMaterialMeshFiles);
-            _multiMaterialMeshesCollectionView.Filter = FilterMultiMaterialMeshes;
+    private bool FilterMultiMaterialMeshes(object obj)
+    {
+        MeshContentFile file = obj as MeshContentFile;
 
-            OnPropertyChanged(() => MultiMaterialMeshesCollectionView);
-        }
+        if (file == null || MultiMaterialMeshesFilterExpression == string.Empty ||
+            MultiMaterialMeshesFilterExpression.Length < 3) return true;
 
-        private bool FilterMultiMaterialMeshes(object obj)
-        {
-            var file = obj as MeshContentFile;
-
-            if (file == null || MultiMaterialMeshesFilterExpression == string.Empty || MultiMaterialMeshesFilterExpression.Length < 3)
-            {
-                return true;
-            }
-
-            return file.Path.Contains(MultiMaterialMeshesFilterExpression);
-        }
-
+        return file.Path.Contains(MultiMaterialMeshesFilterExpression);
     }
 }

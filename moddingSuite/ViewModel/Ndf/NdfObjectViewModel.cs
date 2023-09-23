@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,233 +12,230 @@ using moddingSuite.Model.Ndfbin.Types.AllTypes;
 using moddingSuite.View.DialogProvider;
 using moddingSuite.ViewModel.Base;
 
-namespace moddingSuite.ViewModel.Ndf
+namespace moddingSuite.ViewModel.Ndf;
+
+public class NdfObjectViewModel : ObjectWrapperViewModel<NdfObject>
 {
-    public class NdfObjectViewModel : ObjectWrapperViewModel<NdfObject>
+    public NdfObjectViewModel(NdfObject obj, ViewModelBase parentVm)
+        : base(obj, parentVm)
     {
-        public NdfObjectViewModel(NdfObject obj, ViewModelBase parentVm)
-            : base(obj, parentVm)
+        List<NdfPropertyValue> propVals = new List<NdfPropertyValue>();
+
+        propVals.AddRange(obj.PropertyValues);
+
+        foreach (NdfPropertyValue source in propVals.OrderBy(x => x.Property.Id))
+            PropertyValues.Add(source);
+
+        DetailsCommand = new ActionCommand(DetailsCommandExecute);
+        AddPropertyCommand = new ActionCommand(AddPropertyExecute, AddPropertyCanExecute);
+        RemovePropertyCommand = new ActionCommand(RemovePropertyExecute, RemovePropertyCanExecute);
+        CopyToInstancesCommand = new ActionCommand(CopyToInstancesExecute);
+    }
+
+    public uint Id
+    {
+        get => Object.Id;
+        set
         {
-            var propVals = new List<NdfPropertyValue>();
-
-            propVals.AddRange(obj.PropertyValues);
-
-            foreach (var source in propVals.OrderBy(x => x.Property.Id))
-                PropertyValues.Add(source);
-
-            DetailsCommand = new ActionCommand(DetailsCommandExecute);
-            AddPropertyCommand = new ActionCommand(AddPropertyExecute, AddPropertyCanExecute);
-            RemovePropertyCommand = new ActionCommand(RemovePropertyExecute, RemovePropertyCanExecute);
-            CopyToInstancesCommand = new ActionCommand(CopyToInstancesExecute);
+            Object.Id = value;
+            OnPropertyChanged("Name");
         }
+    }
 
-        public uint Id
+    public ObservableCollection<NdfPropertyValue> PropertyValues { get; } = new();
+
+    public ICommand DetailsCommand { get; protected set; }
+    public ICommand AddPropertyCommand { get; protected set; }
+    public ICommand RemovePropertyCommand { get; protected set; }
+    public ICommand CopyToInstancesCommand { get; protected set; }
+
+    /// <summary>
+    ///     Easy property indexing by name for scripts.
+    /// </summary>
+    public NdfValueWrapper this[string property]
+    {
+        get => GetPropertyValueByName(property)?.Value;
+        set
         {
-            get { return Object.Id; }
-            set
-            {
-                Object.Id = value;
-                OnPropertyChanged("Name");
-            }
+            NdfPropertyValue prop = GetPropertyValueByName(property);
+            if (prop == null)
+                throw new KeyNotFoundException("unknown property");
+
+            prop.BeginEdit();
+            prop.Value = value;
+            prop.EndEdit();
         }
+    }
 
-        public ObservableCollection<NdfPropertyValue> PropertyValues { get; } =
-            new ObservableCollection<NdfPropertyValue>();
+    private NdfPropertyValue GetPropertyValueByName(string name)
+    {
+        return PropertyValues.FirstOrDefault(pv => pv.Property.Name == name);
+    }
 
-        public ICommand DetailsCommand { get; protected set; }
-        public ICommand AddPropertyCommand { get; protected set; }
-        public ICommand RemovePropertyCommand { get; protected set; }
-        public ICommand CopyToInstancesCommand { get; protected set; }
+    private void AddPropertyExecute(object obj)
+    {
+        ICollectionView cv = CollectionViewSource.GetDefaultView(PropertyValues);
 
-        /// <summary>
-        /// Easy property indexing by name for scripts.
-        /// </summary>
-        public NdfValueWrapper this[string property]
+        NdfPropertyValue item = cv.CurrentItem as NdfPropertyValue;
+
+        if (item == null)
+            return;
+
+        NdfType type = NdfType.Unset;
+
+        foreach (NdfObject instance in Object.Class.Instances)
+        foreach (NdfPropertyValue propertyValue in instance.PropertyValues)
+            if (propertyValue.Property.Id == item.Property.Id)
+                if (propertyValue.Type != NdfType.Unset)
+                    type = propertyValue.Type;
+
+        if (type == NdfType.Unset || type == NdfType.Unknown)
+            return;
+
+        item.Value = NdfTypeManager.GetValue(new byte[NdfTypeManager.SizeofType(type)], type, item.Manager);
+    }
+
+    private bool AddPropertyCanExecute()
+    {
+        ICollectionView cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+        NdfPropertyValue item = cv.CurrentItem as NdfPropertyValue;
+
+        if (item == null)
+            return false;
+
+        return item.Type == NdfType.Unset;
+    }
+
+    private void RemovePropertyExecute(object obj)
+    {
+        ICollectionView cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+        NdfPropertyValue item = cv.CurrentItem as NdfPropertyValue;
+
+        if (item == null || item.Type == NdfType.Unset || item.Type == NdfType.Unknown)
+            return;
+
+        MessageBoxResult result = MessageBox.Show("Do you want to set this property to null?", "Confirmation",
+            MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes)
+            item.Value = NdfTypeManager.GetValue(new byte[0], NdfType.Unset, item.Manager);
+    }
+
+    private bool RemovePropertyCanExecute()
+    {
+        ICollectionView cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+        NdfPropertyValue item = cv.CurrentItem as NdfPropertyValue;
+
+        if (item == null)
+            return false;
+
+        return item.Type != NdfType.Unset;
+    }
+
+    private void CopyToInstancesExecute(object obj)
+    {
+        ICollectionView cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+        NdfPropertyValue item = cv.CurrentItem as NdfPropertyValue;
+        foreach (NdfObject instance in item.Instance.Class.Instances)
         {
-            get => GetPropertyValueByName(property)?.Value;
-            set
-            {
-                NdfPropertyValue prop = GetPropertyValueByName(property);
-                if (prop == null)
-                    throw new KeyNotFoundException("unknown property");
-
-                prop.BeginEdit();
-                prop.Value = value;
-                prop.EndEdit();
-            }
+            NdfPropertyValue property = instance.PropertyValues.First(x => x.Property == item.Property);
+            property.BeginEdit();
+            property.Value = item.Value;
+            property.EndEdit();
         }
+    }
 
-        private NdfPropertyValue GetPropertyValueByName(string name) => PropertyValues.FirstOrDefault(pv => pv.Property.Name == name);
+    public void DetailsCommandExecute(object obj)
+    {
+        IEnumerable<DataGridCellInfo> item = obj as IEnumerable<DataGridCellInfo>;
 
-        private void AddPropertyExecute(object obj)
+        if (item == null)
+            return;
+
+        IValueHolder prop = item.First().Item as IValueHolder;
+
+        FollowDetails(prop);
+    }
+
+    private void FollowDetails(IValueHolder prop)
+    {
+        if (prop?.Value == null)
+            return;
+
+        switch (prop.Value.Type)
         {
-            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+            case NdfType.MapList:
+            case NdfType.List:
+                FollowList(prop);
+                break;
+            case NdfType.ObjectReference:
+                FollowObjectReference(prop);
+                break;
+            case NdfType.Map:
+                NdfMap map = prop.Value as NdfMap;
 
-            var item = cv.CurrentItem as NdfPropertyValue;
-
-            if (item == null)
-                return;
-
-            var type = NdfType.Unset;
-
-            foreach (var instance in Object.Class.Instances)
-            {
-                foreach (var propertyValue in instance.PropertyValues)
+                if (map != null)
                 {
-                    if (propertyValue.Property.Id == item.Property.Id)
-                        if (propertyValue.Type != NdfType.Unset)
-                            type = propertyValue.Type;
+                    FollowDetails(map.Key);
+                    FollowDetails(map.Value as IValueHolder);
                 }
-            }
 
-            if (type == NdfType.Unset || type == NdfType.Unknown)
+                break;
+            default:
                 return;
-
-            item.Value = NdfTypeManager.GetValue(new byte[NdfTypeManager.SizeofType(type)], type, item.Manager);
         }
+    }
 
-        private bool AddPropertyCanExecute()
-        {
-            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+    private void FollowObjectReference(IValueHolder prop)
+    {
+        NdfObjectReference refe = prop.Value as NdfObjectReference;
 
-            var item = cv.CurrentItem as NdfPropertyValue;
+        if (refe == null)
+            return;
 
-            if (item == null)
-                return false;
+        NdfClassViewModel vm = new NdfClassViewModel(refe.Class, ParentVm);
 
-            return item.Type == NdfType.Unset;
-        }
+        NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
 
-        private void RemovePropertyExecute(object obj)
-        {
-            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+        if (inst == null)
+            return;
 
-            var item = cv.CurrentItem as NdfPropertyValue;
+        vm.InstancesCollectionView.MoveCurrentTo(inst);
 
-            if (item == null || item.Type == NdfType.Unset || item.Type == NdfType.Unknown)
-                return;
+        DialogProvider.ProvideView(vm, ParentVm);
+    }
 
-            var result = MessageBox.Show("Do you want to set this property to null?", "Confirmation",
-                MessageBoxButton.YesNo, MessageBoxImage.Question);
+    private void FollowList(IValueHolder prop)
+    {
+        NdfCollection refe = prop.Value as NdfCollection;
 
-            if (result == MessageBoxResult.Yes)
-                item.Value = NdfTypeManager.GetValue(new byte[0], NdfType.Unset, item.Manager);
-        }
+        if (refe == null)
+            return;
 
-        private bool RemovePropertyCanExecute()
-        {
-            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+        //if (IsTable(refe))
+        //{
+        ListEditorViewModel editor = new ListEditorViewModel(refe, Object.Class.Manager);
+        DialogProvider.ProvideView(editor, ParentVm);
+        //}
+        //else
+        //{
+        //var editor = new ListEditorViewModel(refe, Object.Class.Manager);
+        //DialogProvider.ProvideView(editor, ParentVm);
+        //}
+    }
 
-            var item = cv.CurrentItem as NdfPropertyValue;
+    private bool IsTable(NdfCollection collection)
+    {
+        NdfMap map = collection.First().Value as NdfMap;
 
-            if (item == null)
-                return false;
+        if (collection == null)
+            return false;
 
-            return item.Type != NdfType.Unset;
-        }
-
-        private void CopyToInstancesExecute(object obj)
-        {
-            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
-
-            var item = cv.CurrentItem as NdfPropertyValue;
-            foreach (var instance in item.Instance.Class.Instances)
-            {
-                var property = instance.PropertyValues.First(x => x.Property == item.Property);
-                property.BeginEdit();
-                property.Value = item.Value;
-                property.EndEdit();
-            }
-        }
-
-        public void DetailsCommandExecute(object obj)
-        {
-            var item = obj as IEnumerable<DataGridCellInfo>;
-
-            if (item == null)
-                return;
-
-            var prop = item.First().Item as IValueHolder;
-
-            FollowDetails(prop);
-        }
-
-        private void FollowDetails(IValueHolder prop)
-        {
-            if (prop?.Value == null)
-                return;
-
-            switch (prop.Value.Type)
-            {
-                case NdfType.MapList:
-                case NdfType.List:
-                    FollowList(prop);
-                    break;
-                case NdfType.ObjectReference:
-                    FollowObjectReference(prop);
-                    break;
-                case NdfType.Map:
-                    var map = prop.Value as NdfMap;
-
-                    if (map != null)
-                    {
-                        FollowDetails(map.Key);
-                        FollowDetails(map.Value as IValueHolder);
-                    }
-
-                    break;
-                default:
-                    return;
-            }
-        }
-
-        private void FollowObjectReference(IValueHolder prop)
-        {
-            var refe = prop.Value as NdfObjectReference;
-
-            if (refe == null)
-                return;
-
-            var vm = new NdfClassViewModel(refe.Class, ParentVm);
-
-            var inst = vm.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
-
-            if (inst == null)
-                return;
-
-            vm.InstancesCollectionView.MoveCurrentTo(inst);
-
-            DialogProvider.ProvideView(vm, ParentVm);
-        }
-
-        private void FollowList(IValueHolder prop)
-        {
-            var refe = prop.Value as NdfCollection;
-
-            if (refe == null)
-                return;
-
-            //if (IsTable(refe))
-            //{
-            var editor = new ListEditorViewModel(refe, Object.Class.Manager);
-            DialogProvider.ProvideView(editor, ParentVm);
-            //}
-            //else
-            //{
-            //var editor = new ListEditorViewModel(refe, Object.Class.Manager);
-            //DialogProvider.ProvideView(editor, ParentVm);
-            //}
-        }
-
-        private bool IsTable(NdfCollection collection)
-        {
-            var map = collection.First().Value as NdfMap;
-
-            if (collection == null)
-                return false;
-
-            var valHolder = map.Value as MapValueHolder;
-            return valHolder.Value is NdfCollection;
-        }
+        MapValueHolder valHolder = map.Value as MapValueHolder;
+        return valHolder.Value is NdfCollection;
     }
 }

@@ -1,215 +1,218 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using moddingSuite.BL;
 using moddingSuite.BL.Compressing;
-using moddingSuite.BL.DDS;
 using moddingSuite.BL.Mesh;
 using moddingSuite.BL.TGV;
+using moddingSuite.Model.Sav;
 using moddingSuite.Model.Textures;
 using moddingSuite.Util;
 
-namespace moddingSuite.Test
+namespace moddingSuite.Test;
+
+[TestClass]
+public class UnitTest1 : BaseTests
 {
-    [TestClass]
-    public class UnitTest1: BaseTests
+    [TestMethod]
+    public void TestMethod1()
     {
-        
-        [TestMethod]
-        public void TestMethod1()
+        SavManager mgr = new();
+
+        using (FileStream fs = new FileStream($@"{AirLandUserDataPath}\remote\profile.wargame", FileMode.Open))
         {
-            SavManager mgr = new SavManager();
-
-            using (var fs = new FileStream($@"{AirLandUserDataPath}\remote\profile.wargame", FileMode.Open))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (var ms = new MemoryStream())
-                {
-                    fs.CopyTo(ms);
+                fs.CopyTo(ms);
 
-                    var save = mgr.Read(ms.ToArray());
-                    save.Checksum.Should().NotBeEmpty();
-                }
+                SavFile save = mgr.Read(ms.ToArray());
+                save.Checksum.Should().NotBeEmpty();
             }
         }
+    }
 
-        //[TestMethod]
-        public void RepackIt()
+    //[TestMethod]
+    public void RepackIt()
+    {
+        string inpath = @"C:\Users\enohka\Desktop\teststuff\leopard2\blob";
+        string outpath = @"C:\Users\enohka\Desktop\teststuff\leopard2\blob.uncmp";
+
+        FileInfo inFi = new FileInfo(inpath);
+
+        byte[] inData = new byte[inFi.Length];
+
+        using (FileStream fs = new FileStream(inpath, FileMode.Open))
         {
-            var inpath = @"C:\Users\enohka\Desktop\teststuff\leopard2\blob";
-            var outpath = @"C:\Users\enohka\Desktop\teststuff\leopard2\blob.uncmp";
-
-            var inFi = new FileInfo(inpath);
-
-            byte[] inData = new byte[inFi.Length];
-
-            using (var fs = new FileStream(inpath, FileMode.Open))
-                fs.Read(inData, 0, inData.Length);
-
-            var outData = Compressor.Decomp(inData);
-
-            using (var fs = File.Exists(outpath) ? new FileStream(outpath, FileMode.Truncate) : File.Create(outpath))
-                fs.Write(outData, 0, outData.Length);
+            fs.Read(inData, 0, inData.Length);
         }
 
-        //[TestMethod]
-        public void ExportTmsTest()
+        byte[] outData = Compressor.Decomp(inData);
+
+        using (FileStream fs = File.Exists(outpath) ? new FileStream(outpath, FileMode.Truncate) : File.Create(outpath))
         {
-            var inpath = @"C:\Users\Anders\wargameexport\r2";
-            var inFile = Path.Combine(inpath, "lowdef.tmst_chunk_pc");
+            fs.Write(outData, 0, outData.Length);
+        }
+    }
 
-            var tgvReader = new TgvReader();
+    //[TestMethod]
+    public void ExportTmsTest()
+    {
+        string inpath = @"C:\Users\Anders\wargameexport\r2";
+        string inFile = Path.Combine(inpath, "lowdef.tmst_chunk_pc");
 
-            var inFileInfo = new FileInfo(inFile);
+        TgvReader tgvReader = new TgvReader();
 
-            TgvFile tgv;
+        FileInfo inFileInfo = new FileInfo(inFile);
 
-            using (var fs = new FileStream(inFile, FileMode.Open))
+        TgvFile tgv;
+
+        using (FileStream fs = new FileStream(inFile, FileMode.Open))
+        {
+            TgvDDSWriter writer = new TgvDDSWriter();
+
+            int index = 1;
+
+            const uint fatMagic = 810828102;
+            Console.WriteLine("start");
+            while (fs.Position < fs.Length)
             {
-                var writer = new TgvDDSWriter();
+                fs.Seek(4, SeekOrigin.Current);
 
-                int index = 1;
+                byte[] buffer = new byte[4];
+                fs.Read(buffer, 0, buffer.Length);
 
-                const uint fatMagic = 810828102;
-                Console.WriteLine("start");
-                while (fs.Position < fs.Length)
+                if (BitConverter.ToUInt32(buffer, 0) != fatMagic)
+                    throw new InvalidDataException();
+                Console.WriteLine("passe");
+                fs.Seek(8, SeekOrigin.Current);
+
+                fs.Read(buffer, 0, buffer.Length);
+                uint blockSize = BitConverter.ToUInt32(buffer, 0);
+
+                if (fs.Position >= fs.Length) continue;
+
+                byte[] tileBuffer = new byte[blockSize];
+
+                fs.Read(tileBuffer, 0, tileBuffer.Length);
+
+                tgv = tgvReader.Read(tileBuffer);
+
+                byte[] content = writer.CreateDDSFile(tgv);
+
+                FileInfo f = new FileInfo(inFile);
+
+                string path = Path.Combine(inpath, string.Format("{0}_{1}", f.Name, "export"));
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                using (FileStream outFs = new FileStream(Path.Combine(path, string.Format("{0}.dds", index)),
+                           FileMode.OpenOrCreate))
                 {
-                    fs.Seek(4, SeekOrigin.Current);
-
-                    var buffer = new byte[4];
-                    fs.Read(buffer, 0, buffer.Length);
-
-                    if (BitConverter.ToUInt32(buffer, 0) != fatMagic)
-                        throw new InvalidDataException();
-                    Console.WriteLine("passe");
-                    fs.Seek(8, SeekOrigin.Current);
-
-                    fs.Read(buffer, 0, buffer.Length);
-                    var blockSize = BitConverter.ToUInt32(buffer, 0);
-
-                    if (fs.Position >= fs.Length) continue;
-
-                    var tileBuffer = new byte[blockSize];
-
-                    fs.Read(tileBuffer, 0, tileBuffer.Length);
-
-                    tgv = tgvReader.Read(tileBuffer);
-
-                    byte[] content = writer.CreateDDSFile(tgv);
-
-                    var f = new FileInfo(inFile);
-
-                    var path = Path.Combine(inpath, string.Format("{0}_{1}", f.Name, "export"));
-
-                    if (!Directory.Exists(path))
-                        Directory.CreateDirectory(path);
-
-                    using (var outFs = new FileStream(Path.Combine(path, string.Format("{0}.dds", index)), FileMode.OpenOrCreate))
-                    {
-                        outFs.Write(content, 0, content.Length);
-                        outFs.Flush();
-                    }
-
-                    index++;
+                    outFs.Write(content, 0, content.Length);
+                    outFs.Flush();
                 }
+
+                index++;
             }
-
         }
+    }
 
-        //[TestMethod]
-        public void TestMeshReader()
+    //[TestMethod]
+    public void TestMeshReader()
+    {
+        string file = Path.Combine(@"C:\Users\enohka\Desktop\teststuff", "mesh_all.spk");
+
+        MeshReader mreader = new MeshReader();
+
+        using (FileStream fs = new FileStream(file, FileMode.Open))
         {
-            var file = Path.Combine(@"C:\Users\enohka\Desktop\teststuff", "mesh_all.spk");
-
-            var mreader = new MeshReader();
-
-            using (var fs = new FileStream(file, FileMode.Open))
-                mreader.Read(fs);
+            mreader.Read(fs);
         }
+    }
 
-        [TestMethod]
-        public void TestHash()
+    [TestMethod]
+    public void TestHash()
+    {
+        const string toHash = "Leopard2A6";
+
+        byte[] hash = Utils.CreateLocalisationHash(toHash, toHash.Length);
+
+        Console.WriteLine("{0}", Utils.ByteArrayToBigEndianHexByteString(hash));
+    }
+
+    //[TestMethod]
+    public void ExportAreaVerteces()
+    {
+        string input = Path.Combine(@"C:\Users\enohka\Desktop\teststuff\scen", "zone_test");
+        string output = Path.Combine(@"C:\Users\enohka\Desktop\teststuff\scen", "zone_test.csv");
+
+        Encoding enc = Encoding.Unicode;
+        byte[] sep = enc.GetBytes(";");
+        byte[] nl = enc.GetBytes("\r\n");
+
+        const int areaMagic = 1095062081;
+
+        using (FileStream i = File.OpenRead(input))
         {
-            const string toHash = "Leopard2A6";
+            byte[] buffer = new byte[4];
+            i.Read(buffer, 0, buffer.Length);
 
-            var hash = Utils.CreateLocalisationHash(toHash, toHash.Length);
+            if (BitConverter.ToInt32(buffer, 0) != areaMagic)
+                throw new InvalidDataException();
 
-            Console.WriteLine("{0}", Utils.ByteArrayToBigEndianHexByteString(hash));
-        }
+            i.Read(buffer, 0, buffer.Length);
+            int vertexCount = BitConverter.ToInt32(buffer, 0);
 
-        //[TestMethod]
-        public void ExportAreaVerteces()
-        {
-            string input = Path.Combine(@"C:\Users\enohka\Desktop\teststuff\scen", "zone_test");
-            string output = Path.Combine(@"C:\Users\enohka\Desktop\teststuff\scen", "zone_test.csv");
+            i.Read(buffer, 0, buffer.Length);
+            int facesCount = BitConverter.ToInt32(buffer, 0);
 
-            var enc = Encoding.Unicode;
-            var sep = enc.GetBytes(";");
-            var nl = enc.GetBytes("\r\n");
-
-            const int areaMagic = 1095062081;
-
-            using (var i = File.OpenRead(input))
+            using (FileStream o = File.OpenWrite(output))
             {
-                var buffer = new byte[4];
+                for (int v = 0; v < vertexCount; v++)
+                {
+                    i.Read(buffer, 0, buffer.Length);
+                    byte[] x = enc.GetBytes(BitConverter.ToSingle(buffer, 0).ToString());
+
+                    i.Read(buffer, 0, buffer.Length);
+                    byte[] y = enc.GetBytes(BitConverter.ToSingle(buffer, 0).ToString());
+
+                    i.Seek(8, SeekOrigin.Current);
+
+                    i.Read(buffer, 0, buffer.Length);
+                    byte[] z = enc.GetBytes(BitConverter.ToSingle(buffer, 0).ToString());
+
+                    o.Write(y, 0, y.Length);
+                    o.Write(sep, 0, sep.Length);
+                    o.Write(x, 0, x.Length);
+                    o.Write(sep, 0, sep.Length);
+                    o.Write(z, 0, z.Length);
+                    o.Write(nl, 0, nl.Length);
+                }
+
                 i.Read(buffer, 0, buffer.Length);
-
                 if (BitConverter.ToInt32(buffer, 0) != areaMagic)
                     throw new InvalidDataException();
 
-                i.Read(buffer, 0, buffer.Length);
-                int vertexCount = BitConverter.ToInt32(buffer, 0);
-
-                i.Read(buffer, 0, buffer.Length);
-                int facesCount = BitConverter.ToInt32(buffer, 0);
-
-                using (var o = File.OpenWrite(output))
+                for (int f = 0; f < facesCount; f++)
                 {
-                    for (int v = 0; v < vertexCount; v++)
-                    {
-                        i.Read(buffer, 0, buffer.Length);
-                        var x = enc.GetBytes(BitConverter.ToSingle(buffer, 0).ToString());
-
-                        i.Read(buffer, 0, buffer.Length);
-                        var y = enc.GetBytes(BitConverter.ToSingle(buffer, 0).ToString());
-
-                        i.Seek(8, SeekOrigin.Current);
-
-                        i.Read(buffer, 0, buffer.Length);
-                        var z = enc.GetBytes(BitConverter.ToSingle(buffer, 0).ToString());
-
-                        o.Write(y, 0, y.Length);
-                        o.Write(sep, 0, sep.Length);
-                        o.Write(x, 0, x.Length);
-                        o.Write(sep, 0, sep.Length);
-                        o.Write(z,0,z.Length);
-                        o.Write(nl, 0, nl.Length);
-                    }
+                    i.Read(buffer, 0, buffer.Length);
+                    byte[] f1 = enc.GetBytes(BitConverter.ToInt32(buffer, 0).ToString());
 
                     i.Read(buffer, 0, buffer.Length);
-                    if (BitConverter.ToInt32(buffer, 0) != areaMagic)
-                        throw new InvalidDataException();
+                    byte[] f2 = enc.GetBytes(BitConverter.ToInt32(buffer, 0).ToString());
 
-                    for (int f = 0; f < facesCount; f++)
-                    {
-                        i.Read(buffer, 0, buffer.Length);
-                        var f1 = enc.GetBytes(BitConverter.ToInt32(buffer, 0).ToString());
+                    i.Read(buffer, 0, buffer.Length);
+                    byte[] f3 = enc.GetBytes(BitConverter.ToInt32(buffer, 0).ToString());
 
-                        i.Read(buffer, 0, buffer.Length);
-                        var f2 = enc.GetBytes(BitConverter.ToInt32(buffer, 0).ToString());
-
-                        i.Read(buffer, 0, buffer.Length);
-                        var f3 = enc.GetBytes(BitConverter.ToInt32(buffer, 0).ToString());
-
-                        o.Write(f1, 0, f1.Length);
-                        o.Write(sep, 0, sep.Length);
-                        o.Write(f2, 0, f2.Length);
-                        o.Write(sep, 0, sep.Length);
-                        o.Write(f3, 0, f3.Length);
-                        o.Write(nl, 0, nl.Length);
-                    }
+                    o.Write(f1, 0, f1.Length);
+                    o.Write(sep, 0, sep.Length);
+                    o.Write(f2, 0, f2.Length);
+                    o.Write(sep, 0, sep.Length);
+                    o.Write(f3, 0, f3.Length);
+                    o.Write(nl, 0, nl.Length);
                 }
             }
         }

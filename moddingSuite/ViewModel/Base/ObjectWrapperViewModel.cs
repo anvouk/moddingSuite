@@ -1,29 +1,32 @@
 ﻿using System;
 
-namespace moddingSuite.ViewModel.Base
+namespace moddingSuite.ViewModel.Base;
+
+public abstract class ObjectWrapperViewModel<T> : ViewModelBase
+    where T : ViewModelBase
 {
-    public abstract class ObjectWrapperViewModel<T> : ViewModelBase 
-        where T : ViewModelBase
+    private ViewModelBase _parentVm;
+
+    protected ObjectWrapperViewModel(T obj, ViewModelBase parentVm)
     {
-        private ViewModelBase _parentVm;
+        if (obj == null)
+            throw new ArgumentException("obj");
+        //if (parentVm == null)
+        //    throw new ArgumentException("parentVm");
 
-        protected ObjectWrapperViewModel(T obj, ViewModelBase parentVm)
+        Object = obj;
+        ParentVm = parentVm;
+    }
+
+    public T Object { get; protected set; }
+
+    public ViewModelBase ParentVm
+    {
+        get => _parentVm;
+        set
         {
-            if (obj == null)
-                throw new ArgumentException("obj");
-            //if (parentVm == null)
-            //    throw new ArgumentException("parentVm");
-
-            Object = obj;
-            ParentVm = parentVm;
-        }
-
-        public T Object { get; protected set; }
-
-        public ViewModelBase ParentVm
-        {
-            get { return _parentVm; }
-            set { _parentVm = value; OnPropertyChanged("ParentVm"); }
+            _parentVm = value;
+            OnPropertyChanged();
         }
     }
 }

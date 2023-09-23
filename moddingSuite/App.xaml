@@ -357,18 +357,22 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
 
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ToolBarButtonHover}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource ToolBarButtonHover}" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="true">
 
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ToolBarButtonHover}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource ToolBarButtonHover}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
 
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ToolBarButtonPressed}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource ToolBarButtonPressed}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -474,13 +478,15 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ToolBarButtonHover}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource ToolBarButtonHover}" />
                                 <Setter Property="Foreground" Value="White" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="true">
                                 <Setter Property="Panel.ZIndex" Value="1" />
                                 <Setter Property="Foreground" Value="White" />
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ToolBarButtonPressed}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource ToolBarButtonPressed}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -516,7 +522,9 @@
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="ExpandPath" Property="Data" Value="M 0 4 L 8 4 L 4 8 Z" />
                             </Trigger>
-                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}" Value="True">
+                            <DataTrigger
+                                Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}"
+                                Value="True">
                                 <Setter TargetName="ExpandPath" Property="Fill" Value="White" />
                             </DataTrigger>
                         </ControlTemplate.Triggers>
@@ -545,7 +553,8 @@
         <Style x:Key="{x:Type TreeViewItem}" TargetType="{x:Type TreeViewItem}">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
             <Setter Property="Padding" Value="1,0,0,0" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
@@ -562,7 +571,8 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
-                                <Grid Margin="{Binding Converter={StaticResource lengthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Grid
+                                    Margin="{Binding Converter={StaticResource lengthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="19" />
                                         <ColumnDefinition />
@@ -604,19 +614,24 @@
                                 <Setter TargetName="PART_Header" Property="MinHeight" Value="19" />
                             </MultiTrigger>
                             <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ToolBarButtonPressed}" />
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource ToolBarButtonPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsSelected" Value="true" />
                                     <Condition Property="IsSelectionActive" Value="false" />
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ToolBarButtonPressed}" />
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource ToolBarButtonPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                             </MultiTrigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -649,7 +664,9 @@
                     Text="{Binding Name}" />
             </Grid>
             <HierarchicalDataTemplate.Triggers>
-                <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}" Value="True">
+                <DataTrigger
+                    Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}"
+                    Value="True">
                     <Setter TargetName="folderIcon" Property="Source" Value="{StaticResource VsFolderIconOpen}" />
                 </DataTrigger>
             </HierarchicalDataTemplate.Triggers>

@@ -1,84 +1,96 @@
 ﻿using System.Collections.Generic;
 using moddingSuite.ViewModel.Base;
 
-namespace moddingSuite.Model.Settings
+namespace moddingSuite.Model.Settings;
+
+public class Settings : ViewModelBase
 {
-    public class Settings : ViewModelBase
+    private bool _exportWithFullPath = true;
+    private bool _initialSettings = true;
+    private int _lastHighlightedFileIndex;
+    private List<string> _lastOpenedFile = new();
+    private string _lastOpenFolder;
+    private string _pythonPath;
+    private string _savePath;
+    private string _wargamePath;
+
+    public string SavePath
     {
-        private string _lastOpenFolder;
-        private List<string> _lastOpenedFile = new List<string>();
-        private string _savePath;
-        private int _lastHighlightedFileIndex;
-        private string _wargamePath;
-        private string _pythonPath;
-        private bool _exportWithFullPath = true;
-        private bool _initialSettings = true;
-
-        public string SavePath
+        get => _savePath;
+        set
         {
-            get { return _savePath; }
-            set
-            {
-                _savePath = value;
-                OnPropertyChanged(() => SavePath);
-            }
+            _savePath = value;
+            OnPropertyChanged(() => SavePath);
         }
+    }
 
-        public List<string> LastOpenedFiles
+    public List<string> LastOpenedFiles
+    {
+        get => _lastOpenedFile;
+        set
         {
-            get { return _lastOpenedFile; }
-            set
-            {
-                _lastOpenedFile = value;
-                OnPropertyChanged(() => LastOpenedFiles);
-            }
+            _lastOpenedFile = value;
+            OnPropertyChanged(() => LastOpenedFiles);
         }
+    }
 
-        public string LastOpenFolder
+    public string LastOpenFolder
+    {
+        get => _lastOpenFolder;
+        set
         {
-            get { return _lastOpenFolder; }
-            set { _lastOpenFolder = value; OnPropertyChanged(() => LastOpenedFiles); }
+            _lastOpenFolder = value;
+            OnPropertyChanged(() => LastOpenedFiles);
         }
+    }
 
-        public int LastHighlightedFileIndex
+    public int LastHighlightedFileIndex
+    {
+        get => _lastHighlightedFileIndex;
+        set
         {
-            get { return _lastHighlightedFileIndex; }
-            set { _lastHighlightedFileIndex = value; OnPropertyChanged(() => LastOpenedFiles); }
+            _lastHighlightedFileIndex = value;
+            OnPropertyChanged(() => LastOpenedFiles);
         }
+    }
 
-        public string WargamePath
+    public string WargamePath
+    {
+        get => _wargamePath;
+        set
         {
-            get { return _wargamePath; }
-            set { _wargamePath = value; OnPropertyChanged(() => WargamePath); }
+            _wargamePath = value;
+            OnPropertyChanged(() => WargamePath);
         }
+    }
 
-        public string PythonPath
+    public string PythonPath
+    {
+        get => _pythonPath;
+        set
         {
-            get { return _pythonPath; }
-            set { _pythonPath = value; OnPropertyChanged(() => PythonPath); }
+            _pythonPath = value;
+            OnPropertyChanged(() => PythonPath);
         }
+    }
 
-        public bool ExportWithFullPath
+    public bool ExportWithFullPath
+    {
+        get => _exportWithFullPath;
+        set
         {
-            get { return _exportWithFullPath; }
-            set
-            {
-                _exportWithFullPath = value; 
-                OnPropertyChanged();
-            }
+            _exportWithFullPath = value;
+            OnPropertyChanged();
         }
+    }
 
-        public bool InitialSettings
+    public bool InitialSettings
+    {
+        get => _initialSettings;
+        set
         {
-            get
-            {
-                return _initialSettings;
-            }
-            set
-            {
-                _initialSettings = value; 
-                OnPropertyChanged();
-            }
+            _initialSettings = value;
+            OnPropertyChanged();
         }
     }
 }

@@ -1,49 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using moddingSuite.Model.Ndfbin;
 using moddingSuite.ViewModel.Base;
 
-namespace moddingSuite.Model.Scenario
+namespace moddingSuite.Model.Scenario;
+
+public class ScenarioFile : ViewModelBase
 {
-    public class ScenarioFile : ViewModelBase
+    private byte[] _checksum;
+    private NdfBinary _ndfBinary;
+    private int _version;
+    private AreaFile _zoneData;
+    public long lastPartStartByte;
+
+    public byte[] Checksum
     {
-        private int _version;
-        private byte[] _checksum;
-        private NdfBinary _ndfBinary;
-        private List<byte[]> _contentFiles = new List<byte[]>();
-        private AreaFile _zoneData;
-        public long lastPartStartByte;
-        public byte[] Checksum
+        get => _checksum;
+        set
         {
-            get { return _checksum; }
-            set { _checksum = value; OnPropertyChanged("Checksum"); }
+            _checksum = value;
+            OnPropertyChanged();
         }
+    }
 
-        public NdfBinary NdfBinary
+    public NdfBinary NdfBinary
+    {
+        get => _ndfBinary;
+        set
         {
-            get { return _ndfBinary; }
-            set { _ndfBinary = value; OnPropertyChanged("Checksum"); }
+            _ndfBinary = value;
+            OnPropertyChanged("Checksum");
         }
+    }
 
-        public int Version
+    public int Version
+    {
+        get => _version;
+        set
         {
-            get { return _version; }
-            set { _version = value; OnPropertyChanged("Version"); }
+            _version = value;
+            OnPropertyChanged();
         }
+    }
 
-        public List<byte[]> ContentFiles
-        {
-            get { return _contentFiles; }
-            set { _contentFiles = value; }
-        }
+    public List<byte[]> ContentFiles { get; set; } = new();
 
-        public AreaFile ZoneData
+    public AreaFile ZoneData
+    {
+        get => _zoneData;
+        set
         {
-            get { return _zoneData; }
-            set { _zoneData = value; OnPropertyChanged("ZoneData"); }
+            _zoneData = value;
+            OnPropertyChanged();
         }
     }
 }

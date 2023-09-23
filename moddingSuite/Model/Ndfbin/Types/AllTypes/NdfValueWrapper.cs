@@ -1,39 +1,33 @@
 ﻿using moddingSuite.ViewModel.Base;
 
-namespace moddingSuite.Model.Ndfbin.Types.AllTypes
+namespace moddingSuite.Model.Ndfbin.Types.AllTypes;
+
+public abstract class NdfValueWrapper : ViewModelBase, INdfScriptSerializable
 {
-    public abstract class NdfValueWrapper : ViewModelBase, INdfScriptSerializable
+    private NdfType _type;
+
+    protected NdfValueWrapper(NdfType type)
     {
-        private NdfType _type;
-        private NdfPropertyValue _parentProperty;
-        protected NdfValueWrapper(NdfType type)
-        {
-            Type = type;
-        }
-
-        public NdfType Type
-        {
-            get { return _type; }
-            protected set
-            {
-                _type = value;
-                OnPropertyChanged("Type");
-            }
-        }
-        public NdfPropertyValue ParentProperty
-        {
-            get { return _parentProperty; }
-            set
-            {
-                _parentProperty = value;
-            }
-        }
-        #region INdfScriptSerializable Members
-
-        public abstract byte[] GetNdfText();
-
-        #endregion
-
-        public abstract byte[] GetBytes();
+        Type = type;
     }
+
+    public NdfType Type
+    {
+        get => _type;
+        protected set
+        {
+            _type = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public NdfPropertyValue ParentProperty { get; set; }
+
+    #region INdfScriptSerializable Members
+
+    public abstract byte[] GetNdfText();
+
+    #endregion
+
+    public abstract byte[] GetBytes();
 }

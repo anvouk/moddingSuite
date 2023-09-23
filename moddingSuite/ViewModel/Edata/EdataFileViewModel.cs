@@ -2,154 +2,140 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Data;
+using System.Windows.Input;
 using moddingSuite.BL;
 using moddingSuite.Model.Edata;
 using moddingSuite.ViewModel.Base;
-using System.Windows.Input;
 
-namespace moddingSuite.ViewModel.Edata
+namespace moddingSuite.ViewModel.Edata;
+
+public class EdataFileViewModel : ViewModelBase
 {
-    public class EdataFileViewModel : ViewModelBase
+    private ObservableCollection<EdataContentFile> _files;
+    private ICollectionView _filesCollectionView;
+    private string _filterExpression = string.Empty;
+    private string _loadedFile = string.Empty;
+
+    public EdataFileViewModel(EdataManagerViewModel parentVm)
     {
-        private ObservableCollection<EdataContentFile> _files;
-        private ICollectionView _filesCollectionView;
-        private string _filterExpression = string.Empty;
-        private string _loadedFile = string.Empty;
-        private EdataManagerViewModel _parentVm;
+        ParentVm = parentVm;
 
-        public EdataManager EdataManager { get; protected set; }
+        CloseCommand = new ActionCommand(x => ParentVm.CloseFile(this));
+        DetailsCommand = new ActionCommand(DetailsExecute);
+    }
 
-        public ICommand CloseCommand { get; set; }
+    public EdataManager EdataManager { get; protected set; }
 
-        public ICommand DetailsCommand { get; set; }
+    public ICommand CloseCommand { get; set; }
 
-        public EdataManagerViewModel ParentVm
+    public ICommand DetailsCommand { get; set; }
+
+    public EdataManagerViewModel ParentVm { get; }
+
+    public string LoadedFile
+    {
+        get => _loadedFile;
+        set
         {
-            get
-            {
-                return _parentVm;
-            }
+            _loadedFile = value;
+            OnPropertyChanged(() => LoadedFile);
+            OnPropertyChanged(() => HeaderText);
         }
+    }
 
-        public EdataFileViewModel(EdataManagerViewModel parentVm)
+    public string HeaderText
+    {
+        get
         {
-            _parentVm = parentVm;
+            FileInfo f = new(LoadedFile);
 
-            CloseCommand = new ActionCommand((x) => ParentVm.CloseFile(this));
-            DetailsCommand = new ActionCommand(DetailsExecute);
+            return f.Name;
         }
+    }
 
-        private void DetailsExecute(object obj)
+    public ObservableCollection<EdataContentFile> Files
+    {
+        get => _files;
+        set
         {
-            var file = obj as EdataContentFile;
-
-            if (file == null)
-                return;
-
-            switch (file.FileType)
-            {
-                case EdataFileType.Ndfbin:
-                    ParentVm.EditNdfbinCommand.Execute(obj);
-                    break;
-                case EdataFileType.Image:
-                    ParentVm.ExportTextureCommand.Execute(obj);
-                    break;
-                case EdataFileType.Dictionary:
-                    ParentVm.EditTradFileCommand.Execute(obj);
-                    break;
-                case EdataFileType.Mesh:
-                    ParentVm.EditMeshCommand.Execute(obj);
-                    break;
-                case EdataFileType.Scenario:
-                    ParentVm.EditScenarioCommand.Execute(obj);
-                    break;
-            }
+            _files = value;
+            OnPropertyChanged(() => Files);
         }
+    }
 
-        public string LoadedFile
+    public ICollectionView FilesCollectionView
+    {
+        get
         {
-            get { return _loadedFile; }
-            set
-            {
-                _loadedFile = value;
-                OnPropertyChanged(() => LoadedFile);
-                OnPropertyChanged(() => HeaderText);
-            }
-        }
+            if (_filesCollectionView == null) CreateFilesCollectionView();
 
-        public string HeaderText
+            return _filesCollectionView;
+        }
+    }
+
+    public string FilterExpression
+    {
+        get => _filterExpression;
+        set
         {
-            get
-            {
-                var f = new FileInfo(LoadedFile);
-
-                return f.Name;
-            }
+            _filterExpression = value;
+            OnPropertyChanged(() => FilterExpression);
+            FilesCollectionView.Refresh();
         }
+    }
 
-        public ObservableCollection<EdataContentFile> Files
+    private void DetailsExecute(object obj)
+    {
+        EdataContentFile file = obj as EdataContentFile;
+
+        if (file == null)
+            return;
+
+        switch (file.FileType)
         {
-            get { return _files; }
-            set
-            {
-                _files = value;
-                OnPropertyChanged(() => Files);
-            }
+            case EdataFileType.Ndfbin:
+                ParentVm.EditNdfbinCommand.Execute(obj);
+                break;
+            case EdataFileType.Image:
+                ParentVm.ExportTextureCommand.Execute(obj);
+                break;
+            case EdataFileType.Dictionary:
+                ParentVm.EditTradFileCommand.Execute(obj);
+                break;
+            case EdataFileType.Mesh:
+                ParentVm.EditMeshCommand.Execute(obj);
+                break;
+            case EdataFileType.Scenario:
+                ParentVm.EditScenarioCommand.Execute(obj);
+                break;
         }
+    }
 
-        public ICollectionView FilesCollectionView
-        {
-            get
-            {
-                if (_filesCollectionView == null)
-                {
-                    CreateFilesCollectionView();
-                }
+    public void LoadFile(string path)
+    {
+        EdataManager = new EdataManager(path);
 
-                return _filesCollectionView;
-            }
-        }
+        LoadedFile = EdataManager.FilePath;
 
-        public string FilterExpression
-        {
-            get { return _filterExpression; }
-            set
-            {
-                _filterExpression = value;
-                OnPropertyChanged(() => FilterExpression);
-                FilesCollectionView.Refresh();
-            }
-        }
+        EdataManager.ParseEdataFile();
+        Files = EdataManager.Files;
+        CreateFilesCollectionView();
+    }
 
-        public void LoadFile(string path)
-        {
-            EdataManager = new EdataManager(path);
+    public bool FilterPath(object item)
+    {
+        EdataContentFile file = item as EdataContentFile;
 
-            LoadedFile = EdataManager.FilePath;
+        if (file == null || FilterExpression == string.Empty || FilterExpression.Length < 3) return true;
 
-            EdataManager.ParseEdataFile();
-            Files = EdataManager.Files;
-            CreateFilesCollectionView();
-        }
+        return file.Path.Contains(FilterExpression);
+    }
 
-        public bool FilterPath(object item)
-        {
-            var file = item as EdataContentFile;
+    private void CreateFilesCollectionView()
+    {
+        _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
+        _filesCollectionView.Filter = FilterPath;
 
-            if (file == null || FilterExpression == string.Empty || FilterExpression.Length < 3)
-            {
-                return true;
-            }
-
-            return file.Path.Contains(FilterExpression);
-        }
-
-        private void CreateFilesCollectionView()
-        {
-            _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
-            _filesCollectionView.Filter = FilterPath;
-
-            OnPropertyChanged(() => FilesCollectionView);
-        }
+        OnPropertyChanged(() => FilesCollectionView);
     }
 }

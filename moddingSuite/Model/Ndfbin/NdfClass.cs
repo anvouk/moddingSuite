@@ -2,57 +2,48 @@
 using System.Globalization;
 using moddingSuite.ViewModel.Base;
 
-namespace moddingSuite.Model.Ndfbin
+namespace moddingSuite.Model.Ndfbin;
+
+public class NdfClass : ViewModelBase
 {
-    public class NdfClass : ViewModelBase
+    private uint _id;
+
+    private string _name;
+
+    public NdfClass(NdfBinary mgr, uint id)
     {
-        private uint _id;
+        Manager = mgr;
+        Id = id;
+    }
 
-        private string _name;
-        private readonly ObservableCollection<NdfObject> _instances = new ObservableCollection<NdfObject>();
-        private readonly ObservableCollection<NdfProperty> _properties = new ObservableCollection<NdfProperty>();
-
-        public uint Id
+    public uint Id
+    {
+        get => _id;
+        set
         {
-            get { return _id; }
-            set
-            {
-                _id = value;
-                OnPropertyChanged(() => Id);
-            }
+            _id = value;
+            OnPropertyChanged(() => Id);
         }
+    }
 
-        public string Name
+    public string Name
+    {
+        get => _name;
+        set
         {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                OnPropertyChanged(() => Name);
-            }
+            _name = value;
+            OnPropertyChanged(() => Name);
         }
+    }
 
-        public ObservableCollection<NdfProperty> Properties
-        {
-            get { return _properties; }
-        }
+    public ObservableCollection<NdfProperty> Properties { get; } = new();
 
-        public ObservableCollection<NdfObject> Instances
-        {
-            get { return _instances; }
-        }
+    public ObservableCollection<NdfObject> Instances { get; } = new();
 
-        public NdfBinary Manager { get; protected set; }
+    public NdfBinary Manager { get; protected set; }
 
-        public NdfClass(NdfBinary mgr, uint id)
-        {
-            Manager = mgr;
-            Id = id;
-        }
-
-        public override string ToString()
-        {
-            return Name.ToString(CultureInfo.InvariantCulture);
-        }
+    public override string ToString()
+    {
+        return Name.ToString(CultureInfo.InvariantCulture);
     }
 }

@@ -7,14 +7,14 @@
     <LangVersion>default</LangVersion>
     <Nullable>warnings</Nullable>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.4" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.4"/>
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.4"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\moddingSuite\moddingSuite.csproj" />
+    <ProjectReference Include="..\moddingSuite\moddingSuite.csproj"/>
   </ItemGroup>
 </Project>

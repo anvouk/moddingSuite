@@ -7,6 +7,6 @@
     <Nullable>warnings</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\moddingSuite\moddingSuite.csproj" />
+    <ProjectReference Include="..\moddingSuite\moddingSuite.csproj"/>
   </ItemGroup>
 </Project>
