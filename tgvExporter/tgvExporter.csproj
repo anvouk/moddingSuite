@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472;net5.0-windows</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>default</LangVersion>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\moddingSuite\moddingSuite.csproj" />
