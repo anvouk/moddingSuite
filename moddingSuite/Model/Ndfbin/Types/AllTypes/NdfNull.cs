@@ -11,12 +11,13 @@ namespace moddingSuite.Model.Ndfbin.Types.AllTypes
 
         public override string ToString()
         {
-            return "null";
+            return "<null>";
         }
 
         public override byte[] GetBytes()
         {
-            throw new InvalidOperationException("Null is not to be saved");
+            // TODO: find a way to prevent editing null fields
+            return new byte[] {};
         }
 
         public override byte[] GetNdfText()
