@@ -7,7 +7,7 @@ public static class Compressor
 {
     public static byte[] Decomp(byte[] input)
     {
-        using (MemoryStream output = new MemoryStream())
+        using (MemoryStream output = new())
         {
             Decomp(input, output);
             return output.ToArray();
@@ -16,9 +16,9 @@ public static class Compressor
 
     public static void Decomp(byte[] input, Stream outputStream)
     {
-        using (ZlibStream zipStream = new ZlibStream(outputStream, CompressionMode.Decompress))
+        using (ZlibStream zipStream = new(outputStream, CompressionMode.Decompress))
         {
-            using (MemoryStream inputStream = new MemoryStream(input))
+            using (MemoryStream inputStream = new(input))
             {
                 byte[] buffer = input.Length > 4096 ? new byte[4096] : new byte[input.Length];
 
@@ -32,12 +32,11 @@ public static class Compressor
 
     public static byte[] Comp(byte[] input)
     {
-        using (MemoryStream sourceStream = new MemoryStream(input))
+        using (MemoryStream sourceStream = new(input))
         {
-            using (MemoryStream compressed = new MemoryStream())
+            using (MemoryStream compressed = new())
             {
-                using (ZlibStream zipSteam =
-                       new ZlibStream(compressed, CompressionMode.Compress, CompressionLevel.Level9, true))
+                using (ZlibStream zipSteam = new(compressed, CompressionMode.Compress, CompressionLevel.Level9, true))
                 {
                     zipSteam.FlushMode = FlushType.Full;
 

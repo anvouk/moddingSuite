@@ -16,7 +16,7 @@ public class NdfVector : NdfFlatValueWrapper
     {
         Point3D pt = (Point3D)Value;
 
-        List<byte> vector = new List<byte>();
+        List<byte> vector = new();
 
         vector.AddRange(BitConverter.GetBytes((float)pt.X));
         vector.AddRange(BitConverter.GetBytes((float)pt.Y));

@@ -21,11 +21,11 @@ public class ZoneEditorData
 
     //List<Outline> zoneOutlines = new List<Outline>();
     private readonly List<ScenarioItem> scenarioItems = new();
+    private readonly List<Zone> zones = new();
     public ScenarioItem selectedItem;
     private int spawnNumber = 1;
     private int startPosNumber = 1;
     private int zoneNumber;
-    private readonly List<Zone> zones = new();
 
     public ZoneEditorData(ScenarioFile sf, string path)
     {
@@ -208,21 +208,21 @@ public class ZoneEditorData
 
             if (addon.Class.Name.Equals("TGameDesignAddOn_ReinforcementLocation") && zone != null)
             {
-                Spawn spawn = new Spawn(Geometry.convertPoint(q), rotation.Value, s, spawnNumber++, SpawnType.Land);
+                Spawn spawn = new(Geometry.convertPoint(q), rotation.Value, s, spawnNumber++, SpawnType.Land);
                 editor.addScenarioItem(spawn);
                 scenarioItems.Add(spawn);
             }
 
             if (addon.Class.Name.Equals("TGameDesignAddOn_MaritimeCorridor") && zone != null)
             {
-                Spawn spawn = new Spawn(Geometry.convertPoint(q), rotation.Value, s, spawnNumber++, SpawnType.Sea);
+                Spawn spawn = new(Geometry.convertPoint(q), rotation.Value, s, spawnNumber++, SpawnType.Sea);
                 editor.addScenarioItem(spawn);
                 scenarioItems.Add(spawn);
             }
 
             if (addon.Class.Name.Equals("TGameDesignAddOn_AerialCorridor") && zone != null)
             {
-                Spawn spawn = new Spawn(Geometry.convertPoint(q), rotation.Value, s, spawnNumber++, SpawnType.Air);
+                Spawn spawn = new(Geometry.convertPoint(q), rotation.Value, s, spawnNumber++, SpawnType.Air);
                 editor.addScenarioItem(spawn);
                 scenarioItems.Add(spawn);
             }

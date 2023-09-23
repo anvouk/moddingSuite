@@ -37,7 +37,7 @@ public class NdfTrippleInt : NdfFlatValueWrapper
 
     public override byte[] GetBytes()
     {
-        List<byte> value = new List<byte>();
+        List<byte> value = new();
         value.AddRange(BitConverter.GetBytes(Convert.ToInt32(Value)));
         value.AddRange(BitConverter.GetBytes(Convert.ToInt32(Value2)));
         value.AddRange(BitConverter.GetBytes(Convert.ToInt32(Value3)));

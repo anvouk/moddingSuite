@@ -54,7 +54,7 @@ public class TgvWriter
 
         long mipdefOffset = destStream.Position;
 
-        List<int> mipImgsizes = new List<int>();
+        List<int> mipImgsizes = new();
         uint tileSize = sourceFile.Width - sourceFile.Width / sourceFile.MipMapCount;
 
         for (int i = 0; i < sourceFile.MipMapCount; i++)

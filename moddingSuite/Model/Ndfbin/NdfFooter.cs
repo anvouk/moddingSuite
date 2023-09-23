@@ -44,7 +44,7 @@ public class NdfFooter : ViewModelBase
 
     public byte[] GetBytes()
     {
-        List<byte> data = new List<byte>();
+        List<byte> data = new();
 
         byte[] seperator = new byte[4];
 

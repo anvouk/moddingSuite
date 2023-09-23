@@ -25,7 +25,7 @@ public class NdfEugFloat2 : NdfFlatValueWrapper
 
     public override byte[] GetBytes()
     {
-        List<byte> value = new List<byte>();
+        List<byte> value = new();
         value.AddRange(BitConverter.GetBytes(Convert.ToSingle(Value)));
         value.AddRange(BitConverter.GetBytes(Convert.ToSingle(Value2)));
         return value.ToArray();

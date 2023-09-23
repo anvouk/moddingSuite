@@ -12,7 +12,7 @@ public class TgvReader
 {
     public TgvFile Read(Stream ms)
     {
-        TgvFile file = new TgvFile();
+        TgvFile file = new();
 
         byte[] buffer = new byte[4];
 
@@ -82,7 +82,7 @@ public class TgvReader
 
     public TgvFile Read(byte[] data)
     {
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             return Read(ms);
         }
@@ -170,9 +170,9 @@ public class TgvReader
         if (id > file.MipMapCount)
             throw new ArgumentException("id");
 
-        byte[] zipo = new byte[] { 0x5A, 0x49, 0x50, 0x4F };
+        byte[] zipo = { 0x5A, 0x49, 0x50, 0x4F };
 
-        TgvMipMap mipMap = new TgvMipMap(file.Offsets[id], file.Sizes[id], 0);
+        TgvMipMap mipMap = new(file.Offsets[id], file.Sizes[id], 0);
 
         byte[] buffer;
 

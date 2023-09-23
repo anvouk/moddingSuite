@@ -32,7 +32,7 @@ public class ObjectCopyResultViewModel : ViewModelBase
         if (instance == null)
             return;
 
-        NdfClassViewModel vm = new NdfClassViewModel(instance.Class, this);
+        NdfClassViewModel vm = new(instance.Class, this);
 
         NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == instance.Id);
 

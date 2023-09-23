@@ -33,7 +33,7 @@ public partial class SettingsView : Window
         if (settings == null)
             return;
 
-        FolderBrowserDialog folderDlg = new FolderBrowserDialog
+        FolderBrowserDialog folderDlg = new()
         {
             SelectedPath = settings.SavePath,
             //RootFolder = Environment.SpecialFolder.MyComputer,
@@ -51,7 +51,7 @@ public partial class SettingsView : Window
         if (settings == null)
             return;
 
-        FolderBrowserDialog folderDlg = new FolderBrowserDialog
+        FolderBrowserDialog folderDlg = new()
         {
             SelectedPath = settings.WargamePath,
             //RootFolder = Environment.SpecialFolder.MyComputer,

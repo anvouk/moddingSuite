@@ -14,7 +14,7 @@ public class NdfColor32 : NdfFlatValueWrapper
     {
         Color col = (Color)Value;
 
-        byte[] colorArray = new[] { col.R, col.G, col.B, col.A };
+        byte[] colorArray = { col.R, col.G, col.B, col.A };
 
         return colorArray;
     }

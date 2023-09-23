@@ -83,7 +83,7 @@ public class NdfMap : NdfFlatValueWrapper
         if (Key.Value == null || ((MapValueHolder)Value).Value == null)
             return new byte[0];
 
-        List<byte> mapdata = new List<byte>();
+        List<byte> mapdata = new();
 
         List<byte> key = Key.Value.GetBytes().ToList();
         List<byte> value = ((MapValueHolder)Value).Value.GetBytes().ToList();
@@ -107,7 +107,7 @@ public class NdfMap : NdfFlatValueWrapper
     public override byte[] GetNdfText()
     {
         Encoding end = NdfTextWriter.NdfTextEncoding;
-        List<byte> data = new List<byte>();
+        List<byte> data = new();
 
         data.AddRange(end.GetBytes("(\n"));
 

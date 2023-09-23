@@ -13,9 +13,9 @@ public class TgvDDSReader
     {
         int contentSize = input.Length - Marshal.SizeOf(typeof(DDS.DDS.Header)) - Marshal.SizeOf(typeof(uint));
 
-        TgvFile file = new TgvFile();
+        TgvFile file = new();
 
-        using (MemoryStream ms = new MemoryStream(input))
+        using (MemoryStream ms = new(input))
         {
             byte[] buffer = new byte[4];
             ms.Read(buffer, 0, buffer.Length);
@@ -40,7 +40,7 @@ public class TgvDDSReader
                 buffer = new byte[mipSize];
                 ms.Read(buffer, 0, buffer.Length);
 
-                TgvMipMap mip = new TgvMipMap { Content = buffer };
+                TgvMipMap mip = new() { Content = buffer };
 
                 file.MipMaps.Add(mip);
 

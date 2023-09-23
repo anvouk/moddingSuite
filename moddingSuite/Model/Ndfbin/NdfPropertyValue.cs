@@ -163,7 +163,7 @@ public class NdfPropertyValue : ViewModelBase, IValueHolder, IEditableObject
         if (refe == null)
             return;
 
-        NdfClassViewModel vm = new NdfClassViewModel(refe.Class, null);
+        NdfClassViewModel vm = new(refe.Class, null);
 
         NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
 
@@ -183,7 +183,7 @@ public class NdfPropertyValue : ViewModelBase, IValueHolder, IEditableObject
             return;
 
 
-        ListEditorViewModel editor = new ListEditorViewModel(refe, Manager);
+        ListEditorViewModel editor = new(refe, Manager);
         DialogProvider.ProvideView(editor);
     }
 

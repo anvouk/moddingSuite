@@ -41,12 +41,12 @@ public partial class App : Application
         bool startApplication = false;
 
         Settings settings = SettingsManager.Load();
-        EdataManagerView mgr = new EdataManagerView();
+        EdataManagerView mgr = new();
 
 
         if (settings.InitialSettings)
         {
-            SettingsView settingsView = new SettingsView();
+            SettingsView settingsView = new();
             settingsView.DataContext = settings;
 
             bool? result = settingsView.ShowDialog();
@@ -66,7 +66,7 @@ public partial class App : Application
 
         if (startApplication)
         {
-            EdataManagerViewModel mainVm = new EdataManagerViewModel();
+            EdataManagerViewModel mainVm = new();
             mgr.DataContext = mainVm;
             mgr.Show();
         }
@@ -76,7 +76,7 @@ public partial class App : Application
     {
         e.Handled = true;
 
-        UnhandledExceptionViewModel vm = new UnhandledExceptionViewModel(e.Exception);
+        UnhandledExceptionViewModel vm = new(e.Exception);
         DialogProvider.ProvideView(vm);
 
         Exception excep = e.Exception;

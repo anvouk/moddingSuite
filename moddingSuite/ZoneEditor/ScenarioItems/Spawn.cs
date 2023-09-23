@@ -13,11 +13,11 @@ namespace moddingSuite.ZoneEditor.ScenarioItems;
 
 public class Spawn : ScenarioItem
 {
-    private SpawnType _type;
     private readonly int arrowHeadLength = 1500;
-    private int arrowLength = 250000;
     private readonly VertexMarker head;
     private readonly VertexMarker source;
+    private SpawnType _type;
+    private int arrowLength = 250000;
 
     public Spawn(Point p, int i, SpawnType t) : this(p, 0, 1f, i, t)
     {
@@ -160,8 +160,7 @@ public class Spawn : ScenarioItem
 
         NdfObject designItem = createNdfObject(data, "TGameDesignItem");
         NdfCollection list = data.Classes.First().Instances.First().PropertyValues.First().Value as NdfCollection;
-        CollectionItemValueHolder ci =
-            new CollectionItemValueHolder(new NdfObjectReference(designItem.Class, designItem.Id), data);
+        CollectionItemValueHolder ci = new(new NdfObjectReference(designItem.Class, designItem.Id), data);
         list.Add(ci);
 
         NdfPropertyValue positionProperty = getProperty(designItem, "Position");

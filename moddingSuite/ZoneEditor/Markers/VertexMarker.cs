@@ -5,8 +5,8 @@ namespace moddingSuite.ZoneEditor.Markers;
 
 internal class VertexMarker : Marker
 {
-    public Brush Colour;
     private readonly MouseEventHandler dragEventHandler;
+    public Brush Colour;
 
     public VertexMarker()
     {

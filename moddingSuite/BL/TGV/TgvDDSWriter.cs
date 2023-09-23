@@ -13,7 +13,7 @@ public class TgvDDSWriter
 {
     public byte[] CreateDDSFile(TgvFile file)
     {
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             byte[] buffer = BitConverter.GetBytes(DDS.DDS.MagicHeader);
             ms.Write(buffer, 0, buffer.Length);
@@ -30,7 +30,7 @@ public class TgvDDSWriter
 
     protected byte[] CreateDDSHeader(TgvFile file)
     {
-        DDS.DDS.Header hd = new DDS.DDS.Header
+        DDS.DDS.Header hd = new()
         {
             Size = 124,
             Flags = DDS.DDS.HeaderFlags.Texture,

@@ -26,7 +26,7 @@ public class TgvBitmapReader
 
         ret = new RawImage(width, height);
 
-        using (MemoryStream ms = new MemoryStream(file.MipMaps[(int)mip].Content))
+        using (MemoryStream ms = new(file.MipMaps[(int)mip].Content))
         {
             if (DDS.DDS.IsCompressedFormat(file.Format)) ReadBlockFormat(ret, ms);
         }
@@ -47,7 +47,7 @@ public class TgvBitmapReader
         for (uint by = 0; by < bh; by++)
         for (uint bx = 0; bx < bw; bx++)
         {
-            ColorBlock block = new ColorBlock();
+            ColorBlock block = new();
 
             // Read color block.
             ReadBlock(block, ms);

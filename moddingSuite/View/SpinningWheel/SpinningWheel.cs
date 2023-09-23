@@ -45,9 +45,10 @@ public class SpinningWheel : Control
         DependencyProperty.Register("SymmetricalArrange", typeof(bool), typeof(SpinningWheel),
             new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsArrange, OnRadiusChanged));
 
-    private Canvas container;
     private readonly DoubleAnimation rotateAnimation = new(0, 360, new Duration(TimeSpan.FromSeconds(1)));
     private readonly Storyboard storyBoard = new();
+
+    private Canvas container;
 
     static SpinningWheel()
     {

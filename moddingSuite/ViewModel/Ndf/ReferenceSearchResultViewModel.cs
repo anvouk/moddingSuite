@@ -32,7 +32,7 @@ public class ReferenceSearchResultViewModel : ViewModelBase
         if (propVal == null)
             return;
 
-        NdfClassViewModel vm = new NdfClassViewModel(propVal.Instance.Class, this);
+        NdfClassViewModel vm = new(propVal.Instance.Class, this);
 
         NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == propVal.Instance.Id);
 

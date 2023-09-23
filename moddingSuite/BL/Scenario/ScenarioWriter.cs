@@ -19,7 +19,7 @@ public class ScenarioWriter
 
     public byte[] Write(ScenarioFile file)
     {
-        List<byte> scenarioData = new List<byte>();
+        List<byte> scenarioData = new();
 
         scenarioData.AddRange(Encoding.ASCII.GetBytes("SCENARIO\r\n"));
         scenarioData.AddRange(BitConverter.GetBytes(Version));
@@ -27,7 +27,7 @@ public class ScenarioWriter
 
         file.ContentFiles[0] = CreateAreaSubFile(file.ZoneData);
 
-        NdfbinWriter ndfBinWriter = new NdfbinWriter();
+        NdfbinWriter ndfBinWriter = new();
 
         file.ContentFiles[1] =
             ndfBinWriter.Write(file.NdfBinary, false); // something wrong here; enohka: Should be fixed by now?
@@ -40,7 +40,7 @@ public class ScenarioWriter
             scenarioData.AddRange(BitConverter.GetBytes(contentFile.Length + padding));
             scenarioData.AddRange(contentFile);
 
-            List<byte> paddingLst = new List<byte>();
+            List<byte> paddingLst = new();
 
             for (int p = 0; p < padding; p++)
                 paddingLst.Add(0x0);
@@ -57,7 +57,7 @@ public class ScenarioWriter
 
     protected byte[] CreateAreaSubFile(AreaFile file)
     {
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             ms.WriteAreaMagic();
             ms.Write(BitConverter.GetBytes(AreaFileVersion), 0, 4);

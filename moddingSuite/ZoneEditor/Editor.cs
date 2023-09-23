@@ -13,9 +13,9 @@ namespace moddingSuite.ZoneEditor;
 
 public partial class Editor : Form
 {
+    private readonly ZoneEditorData zoneData;
     private Image image;
     public Point LeftClickPoint;
-    private readonly ZoneEditorData zoneData;
 
 
     public Editor(ZoneEditorData ze, string path)

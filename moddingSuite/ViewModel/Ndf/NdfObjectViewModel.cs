@@ -19,7 +19,7 @@ public class NdfObjectViewModel : ObjectWrapperViewModel<NdfObject>
     public NdfObjectViewModel(NdfObject obj, ViewModelBase parentVm)
         : base(obj, parentVm)
     {
-        List<NdfPropertyValue> propVals = new List<NdfPropertyValue>();
+        List<NdfPropertyValue> propVals = new();
 
         propVals.AddRange(obj.PropertyValues);
 
@@ -197,7 +197,7 @@ public class NdfObjectViewModel : ObjectWrapperViewModel<NdfObject>
         if (refe == null)
             return;
 
-        NdfClassViewModel vm = new NdfClassViewModel(refe.Class, ParentVm);
+        NdfClassViewModel vm = new(refe.Class, ParentVm);
 
         NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
 
@@ -218,7 +218,7 @@ public class NdfObjectViewModel : ObjectWrapperViewModel<NdfObject>
 
         //if (IsTable(refe))
         //{
-        ListEditorViewModel editor = new ListEditorViewModel(refe, Object.Class.Manager);
+        ListEditorViewModel editor = new(refe, Object.Class.Manager);
         DialogProvider.ProvideView(editor, ParentVm);
         //}
         //else

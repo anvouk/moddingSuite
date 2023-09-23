@@ -53,7 +53,7 @@ public class NdfbinWriter : INdfWriter
 
     public byte[] Write(NdfBinary ndf, bool compressed)
     {
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             Write(ms, ndf, compressed);
 
@@ -63,11 +63,11 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] GetCompiledContent(NdfBinary ndf)
     {
-        NdfFooter footer = new NdfFooter();
+        NdfFooter footer = new();
 
         const long headerSize = (long)NdfbinHeaderSize;
 
-        using (MemoryStream contentStream = new MemoryStream())
+        using (MemoryStream contentStream = new())
         {
             byte[] buffer = RecompileObj(ndf);
             footer.AddEntry("OBJE", contentStream.Position + headerSize, buffer.Length);
@@ -118,7 +118,7 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileObj(NdfBinary ndf)
     {
-        List<byte> objectPart = new List<byte>();
+        List<byte> objectPart = new();
 
         byte[] objSep = { 0xAB, 0xAB, 0xAB, 0xAB };
 
@@ -154,7 +154,7 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileTopo(NdfBinary ndf)
     {
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             List<NdfObject> topInsts = ndf.Instances.Where(x => x.IsTopObject).ToList();
 
@@ -195,7 +195,7 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileChnk(NdfBinary ndf)
     {
-        List<byte> chnk = new List<byte>();
+        List<byte> chnk = new();
 
         chnk.AddRange(BitConverter.GetBytes((uint)0));
         chnk.AddRange(BitConverter.GetBytes(ndf.Instances.Count));
@@ -205,7 +205,7 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileClas(NdfBinary ndf)
     {
-        List<byte> clasData = new List<byte>();
+        List<byte> clasData = new();
 
         foreach (NdfClass clas in ndf.Classes.OrderBy(x => x.Id))
         {
@@ -219,9 +219,9 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileProp(NdfBinary ndf)
     {
-        List<byte> propData = new List<byte>();
+        List<byte> propData = new();
 
-        List<NdfProperty> props = new List<NdfProperty>();
+        List<NdfProperty> props = new();
 
         foreach (NdfClass clas in ndf.Classes)
             props.AddRange(clas.Properties);
@@ -239,7 +239,7 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileStrTable(IEnumerable<NdfStringReference> table)
     {
-        List<byte> strBlock = new List<byte>();
+        List<byte> strBlock = new();
 
         foreach (NdfStringReference stringReference in table)
         {
@@ -252,7 +252,7 @@ public class NdfbinWriter : INdfWriter
 
     protected byte[] RecompileUIntList(IEnumerable<uint> lst)
     {
-        List<byte> data = new List<byte>();
+        List<byte> data = new();
 
         foreach (uint u in lst)
             data.AddRange(BitConverter.GetBytes(u));

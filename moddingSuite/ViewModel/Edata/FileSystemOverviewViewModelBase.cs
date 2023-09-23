@@ -27,7 +27,7 @@ public abstract class FileSystemOverviewViewModelBase : ViewModelBase
 
     protected DirectoryViewModel ParseDirectory(DirectoryInfo info)
     {
-        DirectoryViewModel dirVm = new DirectoryViewModel(info);
+        DirectoryViewModel dirVm = new(info);
 
         foreach (DirectoryInfo directoryInfo in dirVm.Info.EnumerateDirectories())
             dirVm.Items.Add(ParseDirectory(directoryInfo));

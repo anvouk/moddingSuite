@@ -11,7 +11,7 @@ public class NdfTime64 : NdfFlatValueWrapper
 
     public override byte[] GetBytes()
     {
-        DateTime unixdt = new DateTime(1970, 1, 1);
+        DateTime unixdt = new(1970, 1, 1);
         DateTime msdt = (DateTime)Value;
 
         ulong res = (ulong)msdt.Subtract(unixdt).TotalSeconds;

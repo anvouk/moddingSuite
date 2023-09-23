@@ -67,7 +67,7 @@ internal class ArmourDamageViewModel : ObjectWrapperViewModel<NdfObject>
             RowHeaders.Add(damageFamilies[i].Value.ToString());
             DataRow row = TableData.NewRow();
             TableData.Rows.Add(row);
-            ObservableCollection<NdfPropertyValue> damageFamily = new ObservableCollection<NdfPropertyValue>();
+            ObservableCollection<NdfPropertyValue> damageFamily = new();
             for (int j = 0; j < armourFamilies.Count; j++) row[j] = values[k++].Value;
         }
 

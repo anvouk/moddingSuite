@@ -32,13 +32,13 @@ public class EssReader
 
     public byte[] ReadEss(byte[] data)
     {
-        using (MemoryStream inMs = new MemoryStream(data))
+        using (MemoryStream inMs = new(data))
         {
-            BinaryReader br = new BinaryReader(inMs);
+            BinaryReader br = new(inMs);
 
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
-                BinaryWriter bw = new BinaryWriter(ms);
+                BinaryWriter bw = new(ms);
 
                 br.ReadInt32(); // skip ESS version
                 byte unk = br.ReadByte();

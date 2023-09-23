@@ -54,14 +54,14 @@ public class WorkspaceViewModel : FileSystemOverviewViewModelBase
 
         if (attr.HasFlag(FileAttributes.Directory))
         {
-            DirectoryInfo info = new DirectoryInfo(e.FullPath);
+            DirectoryInfo info = new(e.FullPath);
             newVm = new DirectoryViewModel(info);
 
             changedDirName = info.Parent.FullName;
         }
         else
         {
-            FileInfo info = new FileInfo(e.FullPath);
+            FileInfo info = new(e.FullPath);
             newVm = new FileViewModel(info);
 
             changedDirName = info.DirectoryName;

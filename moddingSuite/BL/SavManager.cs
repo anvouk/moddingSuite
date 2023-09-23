@@ -26,11 +26,11 @@ public class SavManager
 
     public SavFile Read(byte[] data)
     {
-        SavFile ret = new SavFile();
+        SavFile ret = new();
 
         byte[] buffer = new byte[4];
 
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             ms.Read(buffer, 0, buffer.Length);
             uint magic = BitConverter.ToUInt32(buffer, 0);

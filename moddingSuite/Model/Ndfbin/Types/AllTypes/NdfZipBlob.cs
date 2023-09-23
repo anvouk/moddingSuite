@@ -12,7 +12,7 @@ public class NdfZipBlob : NdfFlatValueWrapper
 
     public override byte[] GetBytes()
     {
-        List<byte> val = new List<byte>();
+        List<byte> val = new();
 
         val.AddRange(BitConverter.GetBytes((uint)((byte[])Value).Length));
         val.Add(1);

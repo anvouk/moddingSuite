@@ -42,7 +42,7 @@ public class NdfBlob : NdfFlatValueWrapper
 
         //deblockify();*/
         Settings.Settings settings = SettingsManager.Load();
-        StreamWriter logFile = new StreamWriter(new FileStream(Path.Combine(settings.SavePath, "exportLogFile.txt"),
+        StreamWriter logFile = new(new FileStream(Path.Combine(settings.SavePath, "exportLogFile.txt"),
             FileMode.OpenOrCreate));
         logFile.WriteLine("kdf values:");
         foreach (NdfPropertyValue propValue in ParentProperty.Instance.PropertyValues)
@@ -50,7 +50,7 @@ public class NdfBlob : NdfFlatValueWrapper
         //propValue.Property.Name
         byte[] data = GetBytes();
         logFile.WriteLine("blob export data, start byte/end byte/uncompressed length:");
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             byte[] buffer = new byte[4];
 
@@ -112,7 +112,7 @@ public class NdfBlob : NdfFlatValueWrapper
     private void uncompressedPrintToFile(MemoryStream ms, string name, int length, StreamWriter logFile = null)
     {
         Settings.Settings settings = SettingsManager.Load();
-        using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
+        using (FileStream fs = new(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
         {
             byte[] buffer = new byte[length];
             long start = ms.Position;
@@ -143,7 +143,7 @@ public class NdfBlob : NdfFlatValueWrapper
         ms.Seek(0, SeekOrigin.Current);
         byte[] subBlockData = Compressor.Decomp(subBlockBuffer);
         int uncompLength = subBlockData.Length;
-        using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
+        using (FileStream fs = new(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
         {
             fs.Write(subBlockData, 0, subBlockData.Length);
             fs.Flush();
@@ -160,7 +160,7 @@ public class NdfBlob : NdfFlatValueWrapper
         byte[] buffer = GetBytes();
 
         using (FileStream fs =
-               new FileStream(
+               new(
                    Path.Combine(settings.SavePath,
                        string.Format("blobdump_{0}", DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ff"))),
                    FileMode.OpenOrCreate))
@@ -172,7 +172,7 @@ public class NdfBlob : NdfFlatValueWrapper
 
     public override byte[] GetBytes()
     {
-        List<byte> val = new List<byte>();
+        List<byte> val = new();
         val.AddRange(BitConverter.GetBytes((uint)((byte[])Value).Length));
         val.AddRange((byte[])Value);
 
@@ -204,10 +204,9 @@ public class NdfBlob : NdfFlatValueWrapper
         long end = ms.Position;
         ms.Seek(0, SeekOrigin.Current);
         byte[] subBlockData = Compressor.Decomp(subBlockBuffer);
-        MemoryStream bs = new MemoryStream(subBlockData);
+        MemoryStream bs = new(subBlockData);
         uncompressedPrintToFile(bs, "vertexBinary", (int)bs.Length);
-        StreamWriter vertexFile =
-            new StreamWriter(new FileStream(Path.Combine(settings.SavePath, "vertexes.csv"), FileMode.Create));
+        StreamWriter vertexFile = new(new FileStream(Path.Combine(settings.SavePath, "vertexes.csv"), FileMode.Create));
         bs.Read(buffer, 0, buffer.Length);
         int nbVertexes = BitConverter.ToInt32(buffer, 0);
         bs.Read(buffer, 0, buffer.Length);

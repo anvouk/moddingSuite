@@ -27,7 +27,7 @@ public class ScenarioEditorViewModel : ViewModelBase
         OwnerFile = file;
         EdataFileViewModel = ownerVm;
 
-        ScenarioReader reader = new ScenarioReader();
+        ScenarioReader reader = new();
         ScenarioFile = reader.Read(ownerVm.EdataManager.GetRawData(file));
 
         EditGameModeLogicCommand = new ActionCommand(EditGameModeLogicExecute);
@@ -70,7 +70,7 @@ public class ScenarioEditorViewModel : ViewModelBase
 
     private void EditGameModeLogicExecute(object obj)
     {
-        NdfEditorMainViewModel ndfEditor = new NdfEditorMainViewModel(ScenarioFile.NdfBinary);
+        NdfEditorMainViewModel ndfEditor = new(ScenarioFile.NdfBinary);
 
         DialogProvider.ProvideView(ndfEditor, this);
     }
@@ -81,14 +81,14 @@ public class ScenarioEditorViewModel : ViewModelBase
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
                 dispatcher.Invoke(() => IsUIBusy = true);
                 dispatcher.Invoke(report, "Saving back changes...");
 
-                ScenarioWriter writer = new ScenarioWriter();
+                ScenarioWriter writer = new();
                 byte[] newFile = writer.Write(ScenarioFile);
                 dispatcher.Invoke(report,
                     string.Format("Recompiling of {0} finished! ", EdataFileViewModel.EdataManager.FilePath));

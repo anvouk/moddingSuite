@@ -14,7 +14,7 @@ public class ScenarioReader
 {
     public ScenarioFile Read(byte[] data)
     {
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             return Read(ms);
         }
@@ -22,7 +22,7 @@ public class ScenarioReader
 
     public ScenarioFile Read(Stream s)
     {
-        ScenarioFile f = new ScenarioFile();
+        ScenarioFile f = new();
 
         byte[] buffer = new byte[10];
         s.Read(buffer, 0, buffer.Length);
@@ -52,7 +52,7 @@ public class ScenarioReader
             f.ContentFiles.Add(contentFileBuffer);
         }
 
-        NdfbinReader reader = new NdfbinReader();
+        NdfbinReader reader = new();
         f.NdfBinary = reader.Read(f.ContentFiles[1]);
 
         f.ZoneData = ReadZoneData(f.ContentFiles[0]);
@@ -62,9 +62,9 @@ public class ScenarioReader
 
     public AreaFile ReadZoneData(byte[] data)
     {
-        AreaFile areaFile = new AreaFile();
+        AreaFile areaFile = new();
 
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             byte[] buffer = new byte[4];
 
@@ -84,7 +84,7 @@ public class ScenarioReader
 
             for (int lc = 0; lc < layerCount; lc++)
             {
-                AreaColletion areaList = new AreaColletion();
+                AreaColletion areaList = new();
 
                 ms.Read(buffer, 0, buffer.Length);
                 int areasToRead = BitConverter.ToInt32(buffer, 0);
@@ -101,7 +101,7 @@ public class ScenarioReader
 
     protected Area ReadArea(Stream ms)
     {
-        Area currentZone = new Area { Content = new AreaContent() };
+        Area currentZone = new() { Content = new AreaContent() };
         byte[] buffer = new byte[4];
 
         ms.AssertAreaMagic();
@@ -122,7 +122,7 @@ public class ScenarioReader
 
         ms.AssertAreaMagic();
 
-        Point3D attachmentPt = new Point3D();
+        Point3D attachmentPt = new();
         ms.Read(buffer, 0, buffer.Length);
         attachmentPt.X = BitConverter.ToSingle(buffer, 0);
         ms.Read(buffer, 0, buffer.Length);
@@ -138,7 +138,7 @@ public class ScenarioReader
 
         for (int sp = 0; sp < subParts; sp++)
         {
-            AreaClipped aced = new AreaClipped();
+            AreaClipped aced = new();
             ms.Read(buffer, 0, buffer.Length);
             aced.StartTriangle = BitConverter.ToInt32(buffer, 0);
             ms.Read(buffer, 0, buffer.Length);
@@ -178,7 +178,7 @@ public class ScenarioReader
 
         for (int v = 0; v < vertexCount; v++)
         {
-            AreaVertex curVertex = new AreaVertex();
+            AreaVertex curVertex = new();
 
             ms.Read(buffer, 0, buffer.Length);
             curVertex.X = BitConverter.ToSingle(buffer, 0);
@@ -202,7 +202,7 @@ public class ScenarioReader
 
         for (int f = 0; f < trianglesCount; f++)
         {
-            MeshTriangularFace currentTriangle = new MeshTriangularFace();
+            MeshTriangularFace currentTriangle = new();
 
             ms.Read(buffer, 0, buffer.Length);
             currentTriangle.Point1 = BitConverter.ToInt32(buffer, 0);
@@ -231,7 +231,7 @@ public class ScenarioReader
     private void uncompressedPrintToFile(byte[] buffer, string name, StreamWriter logFile = null)
     {
         Settings settings = SettingsManager.Load();
-        using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
+        using (FileStream fs = new(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
         {
             //var buffer = new byte[length];
             //var start = ms.Position;

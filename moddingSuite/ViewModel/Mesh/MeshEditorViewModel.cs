@@ -56,7 +56,7 @@ public class MeshEditorViewModel : ViewModelBase
 
     private void EditTextureBindingsExecute(object obj)
     {
-        NdfEditorMainViewModel ndfEditor = new NdfEditorMainViewModel(MeshFile.TextureBindings);
+        NdfEditorMainViewModel ndfEditor = new(MeshFile.TextureBindings);
 
         DialogProvider.ProvideView(ndfEditor, this);
     }

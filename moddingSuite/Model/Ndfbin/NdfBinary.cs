@@ -52,7 +52,7 @@ public class NdfBinary : ViewModelBase
     {
         uint newId = (uint)Instances.Count();
 
-        NdfObject inst = new NdfObject { Class = cls, Id = newId };
+        NdfObject inst = new() { Class = cls, Id = newId };
 
         AddEmptyProperties(inst);
 

@@ -13,7 +13,7 @@ public class NdfWideString : NdfFlatValueWrapper
 
     public override byte[] GetBytes()
     {
-        List<byte> data = new List<byte>();
+        List<byte> data = new();
 
         string val = (string)Value;
 

@@ -112,7 +112,7 @@ public class ListEditorViewModel : ViewModelBase
                 .Single();
 
         CollectionItemValueHolder wrapper =
-            new CollectionItemValueHolder(
+            new(
                 NdfTypeManager.GetValue(new byte[NdfTypeManager.SizeofType(type)], type, NdfbinManager), NdfbinManager);
 
         if (IsInsertMode)
@@ -142,8 +142,8 @@ public class ListEditorViewModel : ViewModelBase
         if (cv == null)
             return;
 
-        AddCollectionItemView view = new AddCollectionItemView();
-        AddCollectionItemViewModel vm = new AddCollectionItemViewModel(NdfbinManager, view);
+        AddCollectionItemView view = new();
+        AddCollectionItemViewModel vm = new(NdfbinManager, view);
 
         view.DataContext = vm;
 
@@ -222,7 +222,7 @@ public class ListEditorViewModel : ViewModelBase
         if (refe == null)
             return;
 
-        NdfClassViewModel vm = new NdfClassViewModel(refe.Class, null);
+        NdfClassViewModel vm = new(refe.Class, null);
 
         NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
 
@@ -241,7 +241,7 @@ public class ListEditorViewModel : ViewModelBase
         if (refe == null)
             return;
 
-        ListEditorViewModel editor = new ListEditorViewModel(refe, NdfbinManager);
+        ListEditorViewModel editor = new(refe, NdfbinManager);
 
         DialogProvider.ProvideView(editor, this);
     }

@@ -15,14 +15,15 @@ namespace moddingSuite.ZoneEditor.ScenarioItems;
 
 public class Zone : ScenarioItem
 {
-    //private string name;
-    private Possession _possession;
-    private int _value;
-
     private readonly Area area;
     private readonly VertexMarker attachPoint;
     private readonly Editor editor;
+
     private readonly Outline outline;
+
+    //private string name;
+    private Possession _possession;
+    private int _value;
 
     public Zone(Editor e, Point p, int index)
     {
@@ -120,7 +121,7 @@ public class Zone : ScenarioItem
 
     public Area getArea()
     {
-        Area area = new Area();
+        Area area = new();
         area.AttachmentPoint = Geometry.Geometry.convertPoint(attachPoint.getPosition());
         area.Content = Geometry.Geometry.getFromOutline(outline.getOutline());
         area.Name = string.Format("zone_{0}", Guid.NewGuid().ToString());
@@ -141,8 +142,7 @@ public class Zone : ScenarioItem
 
         NdfObject designItem = createNdfObject(data, "TGameDesignItem");
         NdfCollection list = data.Classes.First().Instances.First().PropertyValues.First().Value as NdfCollection;
-        CollectionItemValueHolder ci =
-            new CollectionItemValueHolder(new NdfObjectReference(designItem.Class, designItem.Id), data);
+        CollectionItemValueHolder ci = new(new NdfObjectReference(designItem.Class, designItem.Id), data);
         list.Add(ci);
 
         NdfPropertyValue positionProperty = getProperty(designItem, "Position");

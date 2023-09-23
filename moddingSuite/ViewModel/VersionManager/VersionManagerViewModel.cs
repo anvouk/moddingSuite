@@ -80,11 +80,11 @@ public class VersionManagerViewModel : ViewModelBase
         if (!Directory.Exists(dataPath))
             return;
 
-        DirectoryInfo dataDir = new DirectoryInfo(dataPath);
+        DirectoryInfo dataDir = new(dataPath);
 
         foreach (DirectoryInfo dir in dataDir.EnumerateDirectories())
         {
-            VersionInfoViewModel v = new VersionInfoViewModel(dir, this);
+            VersionInfoViewModel v = new(dir, this);
             Versions.Add(v);
             VersionNumbers.Add(v.Version);
         }

@@ -12,7 +12,7 @@ public class NdfMapList : NdfCollection
 
     public override byte[] GetBytes()
     {
-        List<byte> data = new List<byte>();
+        List<byte> data = new();
 
         data.AddRange(BitConverter.GetBytes(InnerList.Count));
 

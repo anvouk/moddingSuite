@@ -31,7 +31,7 @@ public class TradManager
 
     protected void ParseTradFile(byte[] data)
     {
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             uint entryCount = ReadHeader(ms);
             Entries = ReadDictionary(entryCount, ms);
@@ -56,13 +56,13 @@ public class TradManager
 
     protected ObservableCollection<TradEntry> ReadDictionary(uint entryCount, MemoryStream ms)
     {
-        ObservableCollection<TradEntry> entries = new ObservableCollection<TradEntry>();
+        ObservableCollection<TradEntry> entries = new();
 
         byte[] buffer = new byte[4];
 
         for (int i = 0; i < entryCount; i++)
         {
-            TradEntry entry = new TradEntry { OffsetDic = (uint)ms.Position };
+            TradEntry entry = new() { OffsetDic = (uint)ms.Position };
 
             byte[] hashBuffer = new byte[8];
 
@@ -97,7 +97,7 @@ public class TradManager
 
     public byte[] BuildTradFile()
     {
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             byte[] buffer = Encoding.ASCII.GetBytes("TRAD");
             ms.Write(buffer, 0, buffer.Length);
@@ -161,7 +161,7 @@ public class TradManager
 
     protected string BuildGlyphContent(List<TradEntry> lst)
     {
-        Dictionary<char, int> glyphOccurences = new Dictionary<char, int>();
+        Dictionary<char, int> glyphOccurences = new();
 
         foreach (TradEntry e in lst)
         foreach (char chr in e.Content)

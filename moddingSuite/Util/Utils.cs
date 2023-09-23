@@ -10,7 +10,7 @@ public static class Utils
 {
     public static string ReadString(Stream fs)
     {
-        StringBuilder b = new StringBuilder();
+        StringBuilder b = new();
         int c;
 
         do
@@ -41,7 +41,7 @@ public static class Utils
         if (data == null)
             return string.Empty;
 
-        StringBuilder stringBuilderb = new StringBuilder();
+        StringBuilder stringBuilderb = new();
 
         stringBuilderb.Append(string.Empty);
 
@@ -96,7 +96,7 @@ public static class Utils
             {
             }
 
-        using (FileStream fs = new FileStream(file, FileMode.Truncate))
+        using (FileStream fs = new(file, FileMode.Truncate))
         {
             fs.Write(contentData, 0, contentData.Length);
         }
@@ -105,7 +105,7 @@ public static class Utils
     public static string GenerateCoupon(int length, Random random)
     {
         const string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        StringBuilder result = new StringBuilder(length);
+        StringBuilder result = new(length);
 
         for (int i = 0; i < length; i++)
             result.Append(characters[random.Next(characters.Length)]);

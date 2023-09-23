@@ -16,12 +16,12 @@ public static class SettingsManager
 
     public static Settings Load()
     {
-        Settings settings = new Settings();
+        Settings settings = new();
 
         if (!File.Exists(SettingsPath)) return settings;
 
-        XmlSerializer serializer = new XmlSerializer(typeof(Settings));
-        using (FileStream fs = new FileStream(SettingsPath, FileMode.Open))
+        XmlSerializer serializer = new(typeof(Settings));
+        using (FileStream fs = new(SettingsPath, FileMode.Open))
         {
             try
             {
@@ -51,7 +51,7 @@ public static class SettingsManager
         {
             using (FileStream fs = File.Create(SettingsPath))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Settings));
+                XmlSerializer serializer = new(typeof(Settings));
 
                 serializer.Serialize(fs, settingsToSave);
 

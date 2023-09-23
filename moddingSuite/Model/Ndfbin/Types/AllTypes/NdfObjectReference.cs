@@ -69,7 +69,7 @@ public class NdfObjectReference : NdfValueWrapper
 
     public override byte[] GetBytes()
     {
-        List<byte> refereceData = new List<byte>();
+        List<byte> refereceData = new();
 
         refereceData.AddRange(BitConverter.GetBytes(InstanceId));
 

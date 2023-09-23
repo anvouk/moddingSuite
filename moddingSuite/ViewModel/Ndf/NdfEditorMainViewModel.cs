@@ -46,7 +46,7 @@ public class NdfEditorMainViewModel : ViewModelBase
         OwnerFile = contentFile;
         EdataFileViewModel = ownerVm;
 
-        NdfbinReader ndfbinReader = new NdfbinReader();
+        NdfbinReader ndfbinReader = new();
         NdfBinary = ndfbinReader.Read(ownerVm.EdataManager.GetRawData(contentFile));
 
         //var ndfbinManager = new NdfbinManager(ownerVm.EdataManager.GetRawData(contentFile));
@@ -66,7 +66,7 @@ public class NdfEditorMainViewModel : ViewModelBase
         OwnerFile = null;
         EdataFileViewModel = null;
 
-        NdfbinReader ndfbinReader = new NdfbinReader();
+        NdfbinReader ndfbinReader = new();
         NdfBinary = ndfbinReader.Read(content);
 
         InitializeNdfEditor();
@@ -267,7 +267,7 @@ public class NdfEditorMainViewModel : ViewModelBase
 
         CopyInstance(inst.Object);
 
-        ObjectCopyResultViewModel resultViewModel = new ObjectCopyResultViewModel(_copyInstanceResults, this);
+        ObjectCopyResultViewModel resultViewModel = new(_copyInstanceResults, this);
         DialogProvider.ProvideView(resultViewModel, this);
     }
 
@@ -313,7 +313,7 @@ public class NdfEditorMainViewModel : ViewModelBase
                 break;
             case NdfType.List:
             case NdfType.MapList:
-                List<CollectionItemValueHolder> copiedItems = new List<CollectionItemValueHolder>();
+                List<CollectionItemValueHolder> copiedItems = new();
                 NdfCollection collection = toCopy.Value as NdfCollection;
                 if (collection != null)
                     copiedItems.AddRange(collection.Select(entry =>
@@ -348,12 +348,12 @@ public class NdfEditorMainViewModel : ViewModelBase
         if (inst == null)
             return;
 
-        List<NdfPropertyValue> result = new List<NdfPropertyValue>();
+        List<NdfPropertyValue> result = new();
 
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -364,7 +364,7 @@ public class NdfEditorMainViewModel : ViewModelBase
                 foreach (NdfPropertyValue propertyValue in instance.PropertyValues)
                     GetValue(propertyValue, inst, result, propertyValue);
 
-                ReferenceSearchResultViewModel resultVm = new ReferenceSearchResultViewModel(result, this);
+                ReferenceSearchResultViewModel resultVm = new(result, this);
 
                 dispatcher.Invoke(() => DialogProvider.ProvideView(resultVm, this));
                 dispatcher.Invoke(report, string.Format("{0} references found", result.Count));
@@ -410,7 +410,7 @@ public class NdfEditorMainViewModel : ViewModelBase
 
     private void RunPythonScript(object _)
     {
-        OpenFileDialog scriptDlg = new OpenFileDialog
+        OpenFileDialog scriptDlg = new()
         {
             DefaultExt = ".py",
             Filter = "Python script (.py)|*.py|All Files|*.*"
@@ -517,14 +517,14 @@ public class NdfEditorMainViewModel : ViewModelBase
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
                 dispatcher.Invoke(() => IsUIBusy = true);
                 dispatcher.Invoke(report, "Saving back changes...");
 
-                NdfbinWriter writer = new NdfbinWriter();
+                NdfbinWriter writer = new();
                 byte[] newFile = writer.Write(NdfBinary, NdfBinary.Header.IsCompressedBody);
                 dispatcher.Invoke(report,
                     string.Format("Recompiling of {0} finished! ", EdataFileViewModel.EdataManager.FilePath));
@@ -559,7 +559,7 @@ public class NdfEditorMainViewModel : ViewModelBase
 
         if (cls == null)
             return;
-        NdfClassViewModel vm = new NdfClassViewModel(cls.Object.Class, this);
+        NdfClassViewModel vm = new(cls.Object.Class, this);
         NdfObjectViewModel inst = vm.Instances.SingleOrDefault(x => x.Id == cls.Id);
         ViewModelBase baseViewModel;
         switch (cls.Object.Class.Name)

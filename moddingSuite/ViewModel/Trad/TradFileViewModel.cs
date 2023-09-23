@@ -119,7 +119,7 @@ public class TradFileViewModel : ViewModelBase
         const string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         List<char> allowedChars = characters.ToCharArray().ToList();
 
-        StringBuilder wordToHash = new StringBuilder();
+        StringBuilder wordToHash = new();
 
         foreach (char t in item.Content)
             if (allowedChars.Contains(t))
@@ -172,7 +172,7 @@ public class TradFileViewModel : ViewModelBase
 
     private void AddEntryExecute(object obj)
     {
-        TradEntry newEntry = new TradEntry { Content = "New entry", UserCreated = true };
+        TradEntry newEntry = new() { Content = "New entry", UserCreated = true };
 
         //CalculateHash(newEntry);
 

@@ -18,7 +18,7 @@ public class NdfTextWriter : INdfWriter
 
     public byte[] CreateNdfScript(NdfBinary ndf)
     {
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             byte[] buffer = NdfTextEncoding.GetBytes("// Handwritten by enohka \n// For real\n\n\n");
 

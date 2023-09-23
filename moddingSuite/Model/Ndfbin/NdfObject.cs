@@ -67,7 +67,7 @@ public class NdfObject : ViewModelBase, INdfScriptSerializable
     {
         Encoding enc = NdfTextWriter.NdfTextEncoding;
 
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             byte[] buffer =
                 enc.GetBytes(string.Format("{0}_{1} is {2}\n", NdfTextWriter.InstanceNamePrefix, Id, Class.Name));
@@ -75,7 +75,7 @@ public class NdfObject : ViewModelBase, INdfScriptSerializable
             ms.Write(buffer, 0, buffer.Length);
             ms.Write(enc.GetBytes("(\n"), 0, 1);
 
-            List<byte> propBuff = new List<byte>();
+            List<byte> propBuff = new();
 
             foreach (NdfPropertyValue propVal in PropertyValues)
             {

@@ -20,7 +20,7 @@ public class MeshReader
 
     public MeshFile Read(byte[] data)
     {
-        using (MemoryStream ms = new MemoryStream(data))
+        using (MemoryStream ms = new(data))
         {
             return Read(ms);
         }
@@ -28,7 +28,7 @@ public class MeshReader
 
     public MeshFile Read(Stream s)
     {
-        MeshFile file = new MeshFile();
+        MeshFile file = new();
 
         file.Header = ReadHeader(s);
         file.SubHeader = ReadSubHeader(s);
@@ -47,14 +47,14 @@ public class MeshReader
         s.Seek(file.SubHeader.MeshMaterial.Offset, SeekOrigin.Begin);
         s.Read(buffer, 0, buffer.Length);
 
-        NdfbinReader ndfReader = new NdfbinReader();
+        NdfbinReader ndfReader = new();
 
         return ndfReader.Read(buffer);
     }
 
     protected MeshSubHeader ReadSubHeader(Stream ms)
     {
-        MeshSubHeader shead = new MeshSubHeader();
+        MeshSubHeader shead = new();
 
         byte[] buffer = new byte[4];
 
@@ -79,7 +79,7 @@ public class MeshReader
 
     protected MeshHeaderEntry ReadSubHeaderEntry(Stream s)
     {
-        MeshHeaderEntry entry = new MeshHeaderEntry();
+        MeshHeaderEntry entry = new();
 
         byte[] buffer = new byte[4];
 
@@ -96,7 +96,7 @@ public class MeshReader
     {
         MeshHeaderEntry entry = ReadSubHeaderEntry(s);
 
-        MeshHeaderEntryWithCount entryWithCount = new MeshHeaderEntryWithCount
+        MeshHeaderEntryWithCount entryWithCount = new()
         {
             Offset = entry.Offset,
             Size = entry.Size
@@ -112,7 +112,7 @@ public class MeshReader
 
     protected MeshHeader ReadHeader(Stream ms)
     {
-        MeshHeader head = new MeshHeader();
+        MeshHeader head = new();
 
         byte[] buffer = new byte[4];
 
@@ -150,9 +150,9 @@ public class MeshReader
 
     protected ObservableCollection<MeshContentFile> ReadMeshDictionary(Stream s, MeshFile f)
     {
-        ObservableCollection<MeshContentFile> files = new ObservableCollection<MeshContentFile>();
-        List<EdataDir> dirs = new List<EdataDir>();
-        List<long> endings = new List<long>();
+        ObservableCollection<MeshContentFile> files = new();
+        List<EdataDir> dirs = new();
+        List<long> endings = new();
 
         s.Seek(f.SubHeader.Dictionary.Offset, SeekOrigin.Begin);
 
@@ -166,11 +166,11 @@ public class MeshReader
 
             if (fileGroupId == 0)
             {
-                MeshContentFile file = new MeshContentFile();
+                MeshContentFile file = new();
                 s.Read(buffer, 0, 4);
                 file.FileEntrySize = BitConverter.ToUInt32(buffer, 0);
 
-                Point3D minp = new Point3D();
+                Point3D minp = new();
                 s.Read(buffer, 0, buffer.Length);
                 minp.X = BitConverter.ToSingle(buffer, 0);
                 s.Read(buffer, 0, buffer.Length);
@@ -179,7 +179,7 @@ public class MeshReader
                 minp.Z = BitConverter.ToSingle(buffer, 0);
                 file.MinBoundingBox = minp;
 
-                Point3D maxp = new Point3D();
+                Point3D maxp = new();
                 s.Read(buffer, 0, buffer.Length);
                 maxp.X = BitConverter.ToSingle(buffer, 0);
                 s.Read(buffer, 0, buffer.Length);
@@ -215,7 +215,7 @@ public class MeshReader
             }
             else if (fileGroupId > 0)
             {
-                EdataDir dir = new EdataDir();
+                EdataDir dir = new();
 
                 s.Read(buffer, 0, 4);
                 dir.FileEntrySize = BitConverter.ToInt32(buffer, 0);
@@ -239,7 +239,7 @@ public class MeshReader
 
     protected string MergePath(IEnumerable<EdataDir> dirs, string fileName)
     {
-        StringBuilder b = new StringBuilder();
+        StringBuilder b = new();
 
         foreach (EdataDir dir in dirs)
             b.Append(dir.Name);

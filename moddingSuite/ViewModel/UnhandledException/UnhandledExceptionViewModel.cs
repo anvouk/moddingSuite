@@ -16,7 +16,7 @@ public class UnhandledExceptionViewModel : ViewModelBase
 
         SendErrorCommand = new ActionCommand(SendErrorExecute);
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
 
         Exception excep = exception;
 

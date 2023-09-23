@@ -14,10 +14,10 @@ namespace moddingSuite.ZoneEditor.ScenarioItems;
 
 public class Icon : ScenarioItem
 {
+    private readonly VertexMarker position;
     private int _priority;
     private IconType _type;
     private Image image;
-    private readonly VertexMarker position;
 
     public Icon(Point p, int i, IconType t, int prio = 1)
     {
@@ -138,8 +138,7 @@ public class Icon : ScenarioItem
 
         NdfObject designItem = createNdfObject(data, "TGameDesignItem");
         NdfCollection list = data.Classes.First().Instances.First().PropertyValues.First().Value as NdfCollection;
-        CollectionItemValueHolder ci =
-            new CollectionItemValueHolder(new NdfObjectReference(designItem.Class, designItem.Id), data);
+        CollectionItemValueHolder ci = new(new NdfObjectReference(designItem.Class, designItem.Id), data);
         list.Add(ci);
 
         NdfPropertyValue positionProperty = getProperty(designItem, "Position");

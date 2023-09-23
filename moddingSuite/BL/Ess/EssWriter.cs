@@ -18,9 +18,9 @@ public class EssWriter
     {
         int channels, samplerate;
 
-        using (MemoryStream fs = new MemoryStream(data))
+        using (MemoryStream fs = new(data))
         {
-            BinaryReader br = new BinaryReader(fs);
+            BinaryReader br = new(fs);
 
             uint id = br.ReadUInt32();
             if (id != 0x46464952) throw new InvalidDataException("Expected a valid WAV file.");
@@ -95,9 +95,9 @@ public class EssWriter
             int Bitvalue, Result, d, dk, sign, diff;
             int C1 = 0, C2 = 0, C3 = 0;
 
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
-                BinaryWriter bw = new BinaryWriter(ms);
+                BinaryWriter bw = new(ms);
                 bw.Write(0x2020001);
                 bw.Write((short)0x101);
                 ms.WriteByte((byte)(samplerate >> 8));
@@ -350,8 +350,8 @@ public class EssWriter
     {
         int channels, samplerate;
 
-        MemoryStream ms = new MemoryStream(data);
-        BinaryReader br = new BinaryReader(ms);
+        MemoryStream ms = new(data);
+        BinaryReader br = new(ms);
         uint id = br.ReadUInt32();
         if (id != 0x46464952) throw new InvalidDataException("Expected a valid WAV file.");
         br.ReadUInt32();
@@ -417,7 +417,7 @@ public class EssWriter
         int C1 = 0, C2 = 0, C3 = 0;
 
         ms = new MemoryStream();
-        BinaryWriter bw = new BinaryWriter(ms);
+        BinaryWriter bw = new(ms);
         bw.Write(0x2020001);
         bw.Write((short)0x101);
         ms.WriteByte((byte)(samplerate >> 8));

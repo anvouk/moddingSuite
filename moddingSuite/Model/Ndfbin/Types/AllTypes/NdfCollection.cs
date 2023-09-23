@@ -33,7 +33,7 @@ public class NdfCollection : NdfValueWrapper, IList<CollectionItemValueHolder>, 
 
     public override byte[] GetBytes()
     {
-        List<byte> data = new List<byte>();
+        List<byte> data = new();
 
         data.AddRange(BitConverter.GetBytes(InnerList.Count));
 
@@ -56,7 +56,7 @@ public class NdfCollection : NdfValueWrapper, IList<CollectionItemValueHolder>, 
     {
         Encoding enc = NdfTextWriter.NdfTextEncoding;
 
-        using (MemoryStream ms = new MemoryStream())
+        using (MemoryStream ms = new())
         {
             byte[] buffer = enc.GetBytes("[\n");
             ms.Write(buffer, 0, buffer.Length);

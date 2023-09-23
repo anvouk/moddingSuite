@@ -43,11 +43,11 @@ public class EdataManagerViewModel : ViewModelBase
 
         Settings settings = SettingsManager.Load();
 
-        List<FileInfo> failedFiles = new List<FileInfo>();
+        List<FileInfo> failedFiles = new();
 
         foreach (string file in settings.LastOpenedFiles)
         {
-            FileInfo fileInfo = new FileInfo(file);
+            FileInfo fileInfo = new(file);
 
             if (fileInfo.Exists)
                 try
@@ -124,7 +124,7 @@ public class EdataManagerViewModel : ViewModelBase
 
     public void AddFile(string path)
     {
-        EdataFileViewModel vm = new EdataFileViewModel(this);
+        EdataFileViewModel vm = new(this);
 
         vm.LoadFile(path);
 
@@ -201,7 +201,7 @@ public class EdataManagerViewModel : ViewModelBase
         Action<ViewModelBase, ViewModelBase> open = DialogProvider.ProvideView;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -209,7 +209,7 @@ public class EdataManagerViewModel : ViewModelBase
                 dispatcher.Invoke(report, "Reading scenario...");
 
 
-                ScenarioEditorViewModel detailsVm = new ScenarioEditorViewModel(scenario, vm);
+                ScenarioEditorViewModel detailsVm = new(scenario, vm);
 
                 dispatcher.Invoke(open, detailsVm, this);
             }
@@ -242,17 +242,17 @@ public class EdataManagerViewModel : ViewModelBase
         Action<ViewModelBase, ViewModelBase> open = DialogProvider.ProvideView;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
                 dispatcher.Invoke(() => IsUIBusy = true);
                 dispatcher.Invoke(report, "Reading Mesh package...");
 
-                MeshReader reader = new MeshReader();
+                MeshReader reader = new();
                 MeshFile meshfile = reader.Read(vm.EdataManager.GetRawData(mesh));
 
-                MeshEditorViewModel detailsVm = new MeshEditorViewModel(meshfile);
+                MeshEditorViewModel detailsVm = new(meshfile);
 
                 dispatcher.Invoke(open, detailsVm, this);
             }
@@ -274,7 +274,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        OpenFileDialog openfDlg = new OpenFileDialog
+        OpenFileDialog openfDlg = new()
         {
             //DefaultExt = ".*",
             Multiselect = false,
@@ -297,7 +297,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        OpenFileDialog openfDlg = new OpenFileDialog
+        OpenFileDialog openfDlg = new()
         {
             DefaultExt = ".dds",
             Multiselect = false,
@@ -320,7 +320,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        OpenFileDialog openfDlg = new OpenFileDialog
+        OpenFileDialog openfDlg = new()
         {
             DefaultExt = ".wav",
             Multiselect = false,
@@ -372,7 +372,7 @@ public class EdataManagerViewModel : ViewModelBase
 
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -406,14 +406,14 @@ public class EdataManagerViewModel : ViewModelBase
         if (destTgvFile == null)
             return;
 
-        TgvReader tgvReader = new TgvReader();
+        TgvReader tgvReader = new();
         byte[] data = vm.EdataManager.GetRawData(destTgvFile);
         TgvFile tgv = tgvReader.Read(data);
 
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -424,13 +424,13 @@ public class EdataManagerViewModel : ViewModelBase
 
                 dispatcher.Invoke(report, "Converting DDS to TGV file format...");
 
-                TgvDDSReader ddsReader = new TgvDDSReader();
+                TgvDDSReader ddsReader = new();
                 TgvFile sourceTgvFile = ddsReader.ReadDDS(sourceDds);
                 byte[] sourceTgvRawData;
 
-                using (MemoryStream tgvwriterStream = new MemoryStream())
+                using (MemoryStream tgvwriterStream = new())
                 {
-                    TgvWriter tgvWriter = new TgvWriter();
+                    TgvWriter tgvWriter = new();
                     tgvWriter.Write(tgvwriterStream, sourceTgvFile, tgv.SourceChecksum, tgv.IsCompressed);
                     sourceTgvRawData = tgvwriterStream.ToArray();
                 }
@@ -471,7 +471,7 @@ public class EdataManagerViewModel : ViewModelBase
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -518,7 +518,7 @@ public class EdataManagerViewModel : ViewModelBase
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -526,19 +526,19 @@ public class EdataManagerViewModel : ViewModelBase
 
                 Settings settings = SettingsManager.Load();
 
-                FileInfo f = new FileInfo(sourceTgvFile.Path);
+                FileInfo f = new(sourceTgvFile.Path);
                 string exportPath = Path.Combine(settings.SavePath, f.Name + ".dds");
 
                 dispatcher.Invoke(report, string.Format("Exporting to {0}...", exportPath));
 
-                TgvReader tgvReader = new TgvReader();
+                TgvReader tgvReader = new();
                 TgvFile tgv = tgvReader.Read(vm.EdataManager.GetRawData(sourceTgvFile));
 
-                TgvDDSWriter writer = new TgvDDSWriter();
+                TgvDDSWriter writer = new();
 
                 byte[] content = writer.CreateDDSFile(tgv);
 
-                using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, f.Name + ".dds"),
+                using (FileStream fs = new(Path.Combine(settings.SavePath, f.Name + ".dds"),
                            FileMode.OpenOrCreate))
                 {
                     fs.Write(content, 0, content.Length);
@@ -574,7 +574,7 @@ public class EdataManagerViewModel : ViewModelBase
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -582,15 +582,15 @@ public class EdataManagerViewModel : ViewModelBase
 
                 Settings settings = SettingsManager.Load();
 
-                FileInfo f = new FileInfo(sourceEssFile.Path);
+                FileInfo f = new(sourceEssFile.Path);
                 string exportPath = Path.Combine(settings.SavePath, f.Name + ".wav");
 
                 dispatcher.Invoke(report, string.Format("Exporting to {0}...", exportPath));
 
-                EssReader tgvReader = new EssReader();
+                EssReader tgvReader = new();
                 byte[] tgv = tgvReader.ReadEss(vm.EdataManager.GetRawData(sourceEssFile));
 
-                using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, f.Name + ".wav"),
+                using (FileStream fs = new(Path.Combine(settings.SavePath, f.Name + ".wav"),
                            FileMode.OpenOrCreate))
                 {
                     fs.Write(tgv, 0, tgv.Length);
@@ -641,7 +641,7 @@ public class EdataManagerViewModel : ViewModelBase
         if (ndf == null)
             return;
 
-        TradFileViewModel tradVm = new TradFileViewModel(ndf, vm);
+        TradFileViewModel tradVm = new(ndf, vm);
 
         DialogProvider.ProvideView(tradVm, this);
     }
@@ -663,14 +663,14 @@ public class EdataManagerViewModel : ViewModelBase
         Action<ViewModelBase, ViewModelBase> open = DialogProvider.ProvideView;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
                 dispatcher.Invoke(() => IsUIBusy = true);
                 dispatcher.Invoke(report, "Decompiling ndf binary...");
 
-                NdfEditorMainViewModel detailsVm = new NdfEditorMainViewModel(ndf, vm);
+                NdfEditorMainViewModel detailsVm = new(ndf, vm);
                 dispatcher.Invoke(open, detailsVm, this);
             }
             catch (Exception ex)
@@ -703,9 +703,9 @@ public class EdataManagerViewModel : ViewModelBase
 
         byte[] content = new NdfbinReader().GetUncompressedNdfbinary(vm.EdataManager.GetRawData(ndf));
 
-        FileInfo f = new FileInfo(ndf.Path);
+        FileInfo f = new(ndf.Path);
 
-        using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
+        using (FileStream fs = new(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
         {
             fs.Write(content, 0, content.Length);
             fs.Flush();
@@ -727,7 +727,7 @@ public class EdataManagerViewModel : ViewModelBase
         Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         Action<string> report = msg => StatusText = msg;
 
-        Task s = new Task(() =>
+        Task s = new(() =>
         {
             try
             {
@@ -735,7 +735,7 @@ public class EdataManagerViewModel : ViewModelBase
 
                 Settings settings = SettingsManager.Load();
 
-                FileInfo f = new FileInfo(ndf.Path);
+                FileInfo f = new(ndf.Path);
 
                 string exportFullName =
                     Path.Combine(settings.SavePath, settings.ExportWithFullPath ? ndf.Path : f.Name);
@@ -748,7 +748,7 @@ public class EdataManagerViewModel : ViewModelBase
 
                 byte[] buffer = vm.EdataManager.GetRawData(ndf);
 
-                using (FileStream fs = new FileStream(exportFullName, FileMode.OpenOrCreate))
+                using (FileStream fs = new(exportFullName, FileMode.OpenOrCreate))
                 {
                     fs.Write(buffer, 0, buffer.Length);
                     fs.Flush();
@@ -793,7 +793,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        FolderBrowserDialog folderDlg = new FolderBrowserDialog
+        FolderBrowserDialog folderDlg = new()
         {
             SelectedPath = settings.SavePath,
             //RootFolder = Environment.SpecialFolder.MyComputer,
@@ -811,7 +811,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        FolderBrowserDialog folderDlg = new FolderBrowserDialog
+        FolderBrowserDialog folderDlg = new()
         {
             SelectedPath = settings.WargamePath,
             //RootFolder = Environment.SpecialFolder.MyComputer,
@@ -829,7 +829,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        FolderBrowserDialog folderDlg = new FolderBrowserDialog
+        FolderBrowserDialog folderDlg = new()
         {
             SelectedPath = settings.PythonPath,
             RootFolder = Environment.SpecialFolder.MyComputer,
@@ -847,7 +847,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         Settings settings = SettingsManager.Load();
 
-        OpenFileDialog openfDlg = new OpenFileDialog
+        OpenFileDialog openfDlg = new()
         {
             DefaultExt = ".dat",
             Multiselect = true,
@@ -870,7 +870,7 @@ public class EdataManagerViewModel : ViewModelBase
     {
         EdataFileType type;
 
-        using (FileStream fs = new FileStream(fileName, FileMode.Open))
+        using (FileStream fs = new(fileName, FileMode.Open))
         {
             byte[] headerBuffer = new byte[12];
             fs.Read(headerBuffer, 0, headerBuffer.Length);
@@ -884,9 +884,9 @@ public class EdataManagerViewModel : ViewModelBase
                 fs.Seek(0, SeekOrigin.Begin);
                 fs.Read(buffer, 0, buffer.Length);
 
-                NdfEditorMainViewModel detailsVm = new NdfEditorMainViewModel(buffer);
+                NdfEditorMainViewModel detailsVm = new(buffer);
 
-                NdfbinView view = new NdfbinView { DataContext = detailsVm };
+                NdfbinView view = new() { DataContext = detailsVm };
 
                 view.Show();
             }
@@ -920,15 +920,15 @@ public class EdataManagerViewModel : ViewModelBase
 
         //var f = new FileInfo(ndf.Path);
 
-        using (FileStream fs = new FileStream(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
+        using (FileStream fs = new(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
         {
             fs.Write(buffer, 0, buffer.Length);
             fs.Flush();
         }
 
-        MoviePlaybackViewModel detailsVm = new MoviePlaybackViewModel(Path.Combine(settings.SavePath, name));
+        MoviePlaybackViewModel detailsVm = new(Path.Combine(settings.SavePath, name));
 
-        MoviePlaybackView view = new MoviePlaybackView { DataContext = detailsVm };
+        MoviePlaybackView view = new() { DataContext = detailsVm };
 
         view.Show();
     }
